@@ -9,3 +9,8 @@ AI PROJECT FOR GENERATING ISO AUDIT REPORTS.
 ## Status
 
 Project initialization
+
+## Progress
+
+- Week 2: Audit Report Schemas ✅
+- Week 3: Evidence Ingest API ✅
