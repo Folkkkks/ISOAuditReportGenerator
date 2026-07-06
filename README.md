@@ -16,7 +16,7 @@ Project initialization
 
 - Week 2: Audit Report Schemas ✅
 - Week 3: Evidence Ingest API ✅
-- Week 4: ISO 27001 Knowledge Base Setup 🔄
+- Week 4: ISO 27001 Knowledge Base Setup ↻
 - Week 5: RAG Retrieval Pipeline ❌
 - Week 6: NC Classifier Agent ❌
 - Week 7: Report Composer Agent ❌
