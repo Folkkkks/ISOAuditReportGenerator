@@ -4,7 +4,9 @@ AI PROJECT FOR GENERATING ISO AUDIT REPORTS.
 
 ## Members
 
-- name
+- Waramart Kumsatar
+- Teeraphat Yodyotee
+- Sasikan Saenchanta
 
 ## Status
 
