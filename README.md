@@ -25,3 +25,22 @@ Project initialization
 - [ ] Week 10: Report Viewer 
 - [ ] Week 11: Export PDF / Markdown 
 - [ ] Week 12: Evaluation & Demo Preparation 
+
+
+## System Architecture
+
+```mermaid
+flowchart LR
+    A[Audit Evidence Bundle]
+    --> B[Evidence Normalizer]
+
+    B --> C[NC Classifier]
+
+    C --> D[Clause Mapper]
+
+    D --> E[Report Composer]
+
+    E --> F[Evidence Judge]
+
+    F --> G[Draft Audit Report]
+```
