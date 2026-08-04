@@ -18,12 +18,20 @@ class AuditIngestRequest(BaseModel):
     evidence: list[EvidenceItem]
 
 
+class AuditIngestResponse(BaseModel):
+    audit_id: str
+    org_name: str
+    standard: str
+    evidence: list[EvidenceItem]
+    status: str
+
+
 @app.get("/")
 def root():
     return {"message": "ISO Audit Report Generator API is running"}
 
 
-@app.post("/audits/ingest")
+@app.post("/audits/ingest", response_model=AuditIngestResponse)
 def ingest_audit(request: AuditIngestRequest):
     audit_id = str(uuid4())
 
