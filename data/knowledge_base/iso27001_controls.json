@@ -1,0 +1,61 @@
+{
+  "version": "0.1",
+  "documents": [
+    {
+      "document_id": "ISO27001-A.5.15",
+      "standard": "ISO/IEC 27001:2022",
+      "reference": "A.5.15",
+      "title": "Access control",
+      "summary": "Access to information and related assets should be governed by rules based on business and information-security requirements.",
+      "keywords": [
+        "access control",
+        "authorization",
+        "access policy"
+      ],
+      "source_note": "Project-authored summary; verify against an authorized copy of ISO/IEC 27001:2022 before audit use."
+    },
+    {
+      "document_id": "ISO27001-A.5.16",
+      "standard": "ISO/IEC 27001:2022",
+      "reference": "A.5.16",
+      "title": "Identity management",
+      "summary": "Identity lifecycles should be managed from registration through change and removal so that identities remain controlled and traceable.",
+      "keywords": [
+        "identity",
+        "user lifecycle",
+        "registration",
+        "deprovisioning"
+      ],
+      "source_note": "Project-authored summary; verify against an authorized copy of ISO/IEC 27001:2022 before audit use."
+    },
+    {
+      "document_id": "ISO27001-A.5.17",
+      "standard": "ISO/IEC 27001:2022",
+      "reference": "A.5.17",
+      "title": "Authentication information",
+      "summary": "Authentication information should be assigned and managed through controlled processes, with users advised how to handle it securely.",
+      "keywords": [
+        "authentication",
+        "password",
+        "credential",
+        "secret"
+      ],
+      "source_note": "Project-authored summary; verify against an authorized copy of ISO/IEC 27001:2022 before audit use."
+    },
+    {
+      "document_id": "ISO27001-A.5.18",
+      "standard": "ISO/IEC 27001:2022",
+      "reference": "A.5.18",
+      "title": "Access rights",
+      "summary": "Access rights should be provisioned, reviewed, changed, and removed according to access-control rules and business needs.",
+      "keywords": [
+        "access rights",
+        "access review",
+        "privileged access",
+        "provisioning",
+        "revocation"
+      ],
+      "source_note": "Project-authored summary; verify against an authorized copy of ISO/IEC 27001:2022 before audit use."
+    }
+  ]
+}

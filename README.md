@@ -11,6 +11,7 @@ An AI-enabled system designed to transform raw audit evidence into a structured 
 ## Status
 
 **Iteration 1 – Walking Skeleton Completed**
+**Iteration 2 – In Progress (Week 4 Knowledge Base Setup)**
 
 ## Architectural Summary
 
@@ -60,7 +61,7 @@ Primary use case:
 
 - [x] Week 2: Audit Report Schemas
 - [x] Week 3: Evidence Ingest API
-- [ ] Week 4: ISO 27001 Knowledge Base Setup
+- [x] Week 4: ISO 27001 Knowledge Base Setup
 - [ ] Week 5: RAG Retrieval Pipeline
 - [ ] Week 6: NC Classifier Agent
 - [ ] Week 7: Report Composer Agent
@@ -83,7 +84,7 @@ flowchart TD
     C --> D[NC Classifier - Planned]
     D --> E[Clause Mapper - Planned]
 
-    K[ISO 27001 Knowledge Base - Planned]
+    K[ISO 27001 Knowledge Base]
     K --> E
 
     E --> F[Report Composer - Planned]
@@ -94,16 +95,37 @@ flowchart TD
 
 ## Agent Responsibilities
 
-| Agent / Component | Responsibility | Iteration 1 Status |
+| Agent / Component | Responsibility | Current Status |
 |---|---|---|
 | FastAPI Entry Point | Receive and validate audit evidence bundles | Implemented |
 | Evidence Normalizer | Structure raw audit evidence into observations | Planned |
 | NC Classifier | Classify findings as Major NC, Minor NC, Observation, or OFI | Planned |
 | Clause Mapper | Map findings to ISO/IEC 27001:2022 clauses or controls | Planned |
-| ISO 27001 Knowledge Base | Provide grounded requirement and control information | Planned |
+| ISO 27001 Knowledge Base | Provide grounded requirement and control information | Implemented with local JSON data and Pydantic validation |
 | Report Composer | Generate structured draft audit report sections | Planned |
 | Evidence Judge | Verify that each finding is supported by objective evidence | Planned |
 | AuditReport Schema | Validate the structure of the draft audit report | Implemented with mock data |
+
+## ISO 27001 Knowledge Base
+
+Week 4 implements a local ISO/IEC 27001:2022 knowledge base for development and testing.
+
+The knowledge base includes:
+
+- Structured control references and project-authored summaries
+- Keywords for future retrieval
+- Source notes requiring verification against an authorized ISO copy
+- Pydantic validation through `KnowledgeDocument` and `KnowledgeBase`
+- A reusable loader for the planned RAG retrieval pipeline
+
+Validate the knowledge base from the repository root:
+
+```powershell
+py -m backend.test_knowledge_base
+```
+
+The current dataset is a development sample and does not replace an authorized copy of ISO/IEC 27001:2022.
+
 
 ## API Contract
 
