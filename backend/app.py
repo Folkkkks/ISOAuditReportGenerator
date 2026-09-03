@@ -1,6 +1,13 @@
 from fastapi import FastAPI
 from pydantic import BaseModel
 from uuid import uuid4
+from backend.models.retrieval import RetrievalRequest, RetrievalResult
+from backend.services.retrieval import retrieve_documents
+from backend.agents.nc_classifier import classify_evidence
+from backend.models.classification import (
+    ClassificationRequest,
+    ClassificationResult,
+)
 
 app = FastAPI(title="ISO Audit Report Generator API")
 
@@ -18,12 +25,20 @@ class AuditIngestRequest(BaseModel):
     evidence: list[EvidenceItem]
 
 
+class AuditIngestResponse(BaseModel):
+    audit_id: str
+    org_name: str
+    standard: str
+    evidence: list[EvidenceItem]
+    status: str
+
+
 @app.get("/")
 def root():
     return {"message": "ISO Audit Report Generator API is running"}
 
 
-@app.post("/audits/ingest")
+@app.post("/audits/ingest", response_model=AuditIngestResponse)
 def ingest_audit(request: AuditIngestRequest):
     audit_id = str(uuid4())
 
@@ -36,3 +51,23 @@ def ingest_audit(request: AuditIngestRequest):
     }
 
     return audits_db[audit_id]
+
+@app.post("/knowledge/search", response_model=list[RetrievalResult])
+def search_knowledge(request: RetrievalRequest):
+    return retrieve_documents(
+        query=request.query,
+        top_k=request.top_k,
+    )
+
+
+@app.post(
+    "/findings/classify",
+    response_model=ClassificationResult,
+)
+def classify_finding(
+    request: ClassificationRequest,
+):
+    return classify_evidence(
+        evidence=request.evidence,
+        top_k=request.top_k,
+    )

@@ -23,9 +23,11 @@ finding = AuditFinding(
 report = AuditReport(
     org_name="Acme Corp",
     audit_date=date.today(),
+    standard="ISO/IEC 27001:2022",
     executive_summary="The audit identified one major nonconformity related to access review.",
     findings=[finding],
     open_questions=["Confirm access review frequency."],
+    disclaimer="Draft report for auditor review and sign-off only.",
 )
 
 print(report.model_dump_json(indent=2))
