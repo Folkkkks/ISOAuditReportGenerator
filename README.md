@@ -11,14 +11,15 @@ An AI-enabled system designed to transform raw audit evidence into a structured 
 ## Status
 
 **Iteration 1 – Walking Skeleton Completed**
+**Iteration 2 – In Progress (Weeks 4–8 Completed)**
 
 ## Architectural Summary
 
 The ISO Audit Report Generator helps lead auditors transform raw audit notes, interview records, and checklist results into structured draft audit reports. The intended output includes an executive summary, classified findings, objective evidence, ISO clause references, and suggested corrective actions.
 
-In Iteration 1, the project implements Pydantic schemas, an evidence-ingest FastAPI endpoint, structured request and response validation, sample input/output, and the planned system architecture. The current API uses an in-memory mock workflow and does not yet analyze evidence with an LLM.
+Iteration 1 implemented the Pydantic schemas, evidence-ingest API, request and response validation, sample input/output, and initial architecture.
 
-Evidence normalization, finding classification, ISO clause mapping, report composition, RAG, and evidence judging are currently planned components. These components will be implemented progressively in Iteration 2. All generated reports are intended for auditor review and sign-off only.
+Iteration 2 currently includes the ISO 27001 knowledge base, lexical RAG retrieval, Gemini NC Classifier, Gemini Report Composer, and Evidence Judge. Evidence normalization, a dedicated Clause Mapper, UI, workflow orchestration, and evaluation remain planned. All generated reports require auditor review and sign-off.
 
 ## Problem and Solution
 
@@ -60,11 +61,11 @@ Primary use case:
 
 - [x] Week 2: Audit Report Schemas
 - [x] Week 3: Evidence Ingest API
-- [ ] Week 4: ISO 27001 Knowledge Base Setup
-- [ ] Week 5: RAG Retrieval Pipeline
-- [ ] Week 6: NC Classifier Agent
-- [ ] Week 7: Report Composer Agent
-- [ ] Week 8: Evidence Judge Agent
+- [x] Week 4: ISO 27001 Knowledge Base Setup
+- [x] Week 5: RAG Retrieval Pipeline
+- [x] Week 6: NC Classifier Agent
+- [x] Week 7: Report Composer Agent
+- [x] Week 8: Evidence Judge Agent
 - [ ] Week 9: Frontend UI
 - [ ] Week 10: Report Viewer
 - [ ] Week 11: Export PDF / Markdown
@@ -80,39 +81,69 @@ flowchart TD
     A --> B[FastAPI Entry Point]
 
     B --> C[Evidence Normalizer - Planned]
-    C --> D[NC Classifier - Planned]
+    C --> D[NC Classifier Agent]
     D --> E[Clause Mapper - Planned]
 
-    K[ISO 27001 Knowledge Base - Planned]
-    K --> E
+    K[ISO 27001 Knowledge Base]
+    K --> R[Retrieval Pipeline]
+    R --> E
 
-    E --> F[Report Composer - Planned]
-    F --> G[Evidence Judge - Planned]
+    E --> F[Report Composer]
+    F --> G[Evidence Judge]
     G --> H[AuditReport Pydantic Schema]
     H --> I[Draft Audit Report for Auditor Review]
 ```
 
 ## Agent Responsibilities
 
-| Agent / Component | Responsibility | Iteration 1 Status |
+| Agent / Component | Responsibility | Current Status |
 |---|---|---|
 | FastAPI Entry Point | Receive and validate audit evidence bundles | Implemented |
 | Evidence Normalizer | Structure raw audit evidence into observations | Planned |
-| NC Classifier | Classify findings as Major NC, Minor NC, Observation, or OFI | Planned |
+| NC Classifier | Classify findings as Major NC, Minor NC, Observation, or OFI | Implemented with Gemini structured output |
 | Clause Mapper | Map findings to ISO/IEC 27001:2022 clauses or controls | Planned |
-| ISO 27001 Knowledge Base | Provide grounded requirement and control information | Planned |
-| Report Composer | Generate structured draft audit report sections | Planned |
-| Evidence Judge | Verify that each finding is supported by objective evidence | Planned |
-| AuditReport Schema | Validate the structure of the draft audit report | Implemented with mock data |
+| ISO 27001 Knowledge Base | Provide grounded requirement and control information | Implemented with local JSON data and Pydantic validation |
+| Retrieval Pipeline | Rank relevant ISO knowledge for submitted evidence | Implemented with baseline lexical retrieval |
+| Report Composer | Generate structured draft audit reports using Gemini with grounding validation | Implemented |
+| Evidence Judge | Verify findings against source evidence and knowledge-base references | Implemented |
+| AuditReport Schema | Validate the structure of the draft audit report | Implemented and used by Report Composer |
+
+## ISO 27001 Knowledge Base
+
+Week 4 implements a local ISO/IEC 27001:2022 knowledge base for development and testing.
+
+The knowledge base includes:
+
+- Structured control references and project-authored summaries
+- Keywords for future retrieval
+- Source notes requiring verification against an authorized ISO copy
+- Pydantic validation through `KnowledgeDocument` and `KnowledgeBase`
+- A reusable loader for the planned RAG retrieval pipeline
+
+Validate the knowledge base from the repository root:
+
+```powershell
+py -m backend.test_knowledge_base
+```
+
+The current dataset is a development sample and does not replace an authorized copy of ISO/IEC 27001:2022.
+
 
 ## API Contract
 
-| Method | Endpoint | Request Model | Response Model | Iteration 1 Behavior |
+| Method | Endpoint | Request Model | Response Model | Current Behavior |
 |---|---|---|---|---|
 | GET | `/` | None | Status message | Returns API status |
 | POST | `/audits/ingest` | `AuditIngestRequest` | `AuditIngestResponse` | Validates and stores evidence in memory |
+| POST | `/knowledge/search` | `RetrievalRequest` | `list[RetrievalResult]` | Returns ranked ISO knowledge documents |
+| POST | `/findings/classify` | `ClassificationRequest` | `ClassificationResult` | Retrieves ISO context and classifies evidence with Gemini |
+| POST | `/reports/compose` | `ReportComposeRequest` | `AuditReport` | Classifies evidence and generates a grounded draft audit report |
+| POST | `/reports/judge` | `EvidenceJudgeRequest` | `EvidenceJudgeResponse` | Verifies findings against source evidence and knowledge references |
 
 The `POST /audits/ingest` endpoint uses FastAPI's `response_model` to validate the response against the `AuditIngestResponse` Pydantic model.
+
+The `POST /knowledge/search` endpoint retrieves and ranks relevant ISO knowledge documents and validates the response against a list of `RetrievalResult` models.
+
 
 ## Pydantic Schemas
 
@@ -178,7 +209,7 @@ The following output is mock data defined in `backend/test_schemas.py`. It demon
 ```json
 {
   "org_name": "Acme Corp",
-  "audit_date": "2026-08-03",
+  "audit_date": "2026-09-04",
   "standard": "ISO/IEC 27001:2022",
   "executive_summary": "The audit identified one major nonconformity related to access review.",
   "findings": [
@@ -280,28 +311,29 @@ Use Swagger UI to test `POST /audits/ingest` with the sample request shown above
 
 ## Known Limitations
 
-- The current `/audits/ingest` endpoint stores evidence in an in-memory dictionary.
+- The `/audits/ingest` endpoint stores evidence in an in-memory dictionary.
 - Stored data is lost when the FastAPI server restarts.
-- The endpoint does not yet transform evidence into an `AuditReport`.
-- The `AuditReport` shown in `test_schemas.py` is mock data.
-- Evidence Normalizer, NC Classifier, Clause Mapper, Report Composer, and Evidence Judge are not yet implemented.
-- Real LLM, RAG, ISO Knowledge Base retrieval, UI, and evaluation are deferred.
+- The implemented agent endpoints are not yet connected as one automatic end-to-end workflow.
+- Evidence Normalizer and the dedicated Clause Mapper are not yet implemented.
+- Gemini-generated classifications, reports, and judgments require qualified auditor review.
+- Semantic/vector retrieval, UI, workflow orchestration, and evaluation are not yet implemented.
+- The current RAG retrieval pipeline uses baseline lexical ranking over a development knowledge-base sample.
 
 ## Design Foresight and Next Iterations
 
 ### Iteration 2 – AI Core (`v0.2.0`)
 
-Planned work:
+Current progress:
 
-1. Prepare the ISO/IEC 27001:2022 Knowledge Base.
-2. Implement document ingestion, chunking, and retrieval.
-3. Connect an LLM with structured Pydantic output.
-4. Implement evidence normalization.
-5. Implement finding classification.
-6. Implement ISO clause mapping.
-7. Implement report composition.
-8. Implement the Evidence Judge and grounding checks.
-9. Evaluate the system using a gold subset and defined metrics.
+1. ISO/IEC 27001:2022 Knowledge Base — Completed
+2. Baseline lexical RAG retrieval — Completed
+3. Gemini structured-output integration — Completed
+4. NC Classifier Agent — Completed
+5. Report Composer Agent — Completed
+6. Evidence Judge and grounding checks — Completed
+7. Evidence Normalizer — Planned
+8. Dedicated Clause Mapper — Planned
+9. Evaluation using a gold subset and defined metrics — Planned
 
 ### Iteration 3 – Product and Demo (`v1.0.0`)
 
