@@ -11,6 +11,11 @@ from backend.models.classification import (
 from backend.agents.report_composer import compose_report
 from backend.models.report_composition import ReportComposeRequest
 from backend.models.schemas import AuditReport
+from backend.agents.evidence_judge import judge_report
+from backend.models.evidence_judgment import (
+    EvidenceJudgeRequest,
+    EvidenceJudgeResponse,
+)
 
 app = FastAPI(title="ISO Audit Report Generator API")
 
@@ -76,7 +81,16 @@ def classify_finding(
     )
 
 
-
 @app.post("/reports/compose", response_model=AuditReport)
 def compose_audit_report(request: ReportComposeRequest):
     return compose_report(request)
+
+
+@app.post(
+    "/reports/judge",
+    response_model=EvidenceJudgeResponse,
+)
+def judge_audit_report(
+    request: EvidenceJudgeRequest,
+):
+    return judge_report(request)
