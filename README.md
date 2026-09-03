@@ -11,7 +11,7 @@ An AI-enabled system designed to transform raw audit evidence into a structured 
 ## Status
 
 **Iteration 1 – Walking Skeleton Completed**
-**Iteration 2 – In Progress (Week 4 Knowledge Base Setup)**
+**Iteration 2 – In Progress (Weeks 4–6 Completed)**
 
 ## Architectural Summary
 
@@ -63,7 +63,7 @@ Primary use case:
 - [x] Week 3: Evidence Ingest API
 - [x] Week 4: ISO 27001 Knowledge Base Setup
 - [x] Week 5: RAG Retrieval Pipeline
-- [ ] Week 6: NC Classifier Agent
+- [x] Week 6: NC Classifier Agent
 - [ ] Week 7: Report Composer Agent
 - [ ] Week 8: Evidence Judge Agent
 - [ ] Week 9: Frontend UI
@@ -81,7 +81,7 @@ flowchart TD
     A --> B[FastAPI Entry Point]
 
     B --> C[Evidence Normalizer - Planned]
-    C --> D[NC Classifier - Planned]
+    C --> D[NC Classifier Agent]
     D --> E[Clause Mapper - Planned]
 
     K[ISO 27001 Knowledge Base]
@@ -100,7 +100,7 @@ flowchart TD
 |---|---|---|
 | FastAPI Entry Point | Receive and validate audit evidence bundles | Implemented |
 | Evidence Normalizer | Structure raw audit evidence into observations | Planned |
-| NC Classifier | Classify findings as Major NC, Minor NC, Observation, or OFI | Planned |
+| NC Classifier | Classify findings as Major NC, Minor NC, Observation, or OFI | Implemented with Gemini structured output |
 | Clause Mapper | Map findings to ISO/IEC 27001:2022 clauses or controls | Planned |
 | ISO 27001 Knowledge Base | Provide grounded requirement and control information | Implemented with local JSON data and Pydantic validation |
 | Retrieval Pipeline | Rank relevant ISO knowledge for submitted evidence | Implemented with baseline lexical retrieval |
@@ -136,10 +136,12 @@ The current dataset is a development sample and does not replace an authorized c
 | GET | `/` | None | Status message | Returns API status |
 | POST | `/audits/ingest` | `AuditIngestRequest` | `AuditIngestResponse` | Validates and stores evidence in memory |
 | POST | `/knowledge/search` | `RetrievalRequest` | `list[RetrievalResult]` | Returns ranked ISO knowledge documents |
+| POST | `/findings/classify` | `ClassificationRequest` | `ClassificationResult` | Retrieves ISO context and classifies evidence with Gemini |
 
 The `POST /audits/ingest` endpoint uses FastAPI's `response_model` to validate the response against the `AuditIngestResponse` Pydantic model.
 
 The `POST /knowledge/search` endpoint retrieves and ranks relevant ISO knowledge documents and validates the response against a list of `RetrievalResult` models.
+
 
 ## Pydantic Schemas
 
@@ -311,8 +313,10 @@ Use Swagger UI to test `POST /audits/ingest` with the sample request shown above
 - Stored data is lost when the FastAPI server restarts.
 - The endpoint does not yet transform evidence into an `AuditReport`.
 - The `AuditReport` shown in `test_schemas.py` is mock data.
-- Evidence Normalizer, NC Classifier, Clause Mapper, Report Composer, and Evidence Judge are not yet implemented.
-- Real LLM, RAG, ISO Knowledge Base retrieval, UI, and evaluation are deferred.
+- Evidence Normalizer, Clause Mapper, Report Composer, and Evidence Judge are not yet implemented.
+- The NC Classifier uses Gemini with structured output, but the full end-to-end LLM workflow is not yet implemented.
+- Semantic/vector retrieval, UI, and evaluation are not yet implemented.
+- The current RAG retrieval pipeline uses baseline lexical ranking over a development knowledge-base sample.
 
 ## Design Foresight and Next Iterations
 
