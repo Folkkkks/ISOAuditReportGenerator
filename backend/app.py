@@ -1,6 +1,8 @@
 from fastapi import FastAPI
 from pydantic import BaseModel
 from uuid import uuid4
+from backend.models.retrieval import RetrievalRequest, RetrievalResult
+from backend.services.retrieval import retrieve_documents
 
 app = FastAPI(title="ISO Audit Report Generator API")
 
@@ -44,3 +46,10 @@ def ingest_audit(request: AuditIngestRequest):
     }
 
     return audits_db[audit_id]
+
+@app.post("/knowledge/search", response_model=list[RetrievalResult])
+def search_knowledge(request: RetrievalRequest):
+    return retrieve_documents(
+        query=request.query,
+        top_k=request.top_k,
+    )

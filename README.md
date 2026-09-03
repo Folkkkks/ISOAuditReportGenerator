@@ -62,7 +62,7 @@ Primary use case:
 - [x] Week 2: Audit Report Schemas
 - [x] Week 3: Evidence Ingest API
 - [x] Week 4: ISO 27001 Knowledge Base Setup
-- [ ] Week 5: RAG Retrieval Pipeline
+- [x] Week 5: RAG Retrieval Pipeline
 - [ ] Week 6: NC Classifier Agent
 - [ ] Week 7: Report Composer Agent
 - [ ] Week 8: Evidence Judge Agent
@@ -85,7 +85,8 @@ flowchart TD
     D --> E[Clause Mapper - Planned]
 
     K[ISO 27001 Knowledge Base]
-    K --> E
+    K --> R[Retrieval Pipeline]
+    R --> E
 
     E --> F[Report Composer - Planned]
     F --> G[Evidence Judge - Planned]
@@ -102,6 +103,7 @@ flowchart TD
 | NC Classifier | Classify findings as Major NC, Minor NC, Observation, or OFI | Planned |
 | Clause Mapper | Map findings to ISO/IEC 27001:2022 clauses or controls | Planned |
 | ISO 27001 Knowledge Base | Provide grounded requirement and control information | Implemented with local JSON data and Pydantic validation |
+| Retrieval Pipeline | Rank relevant ISO knowledge for submitted evidence | Implemented with baseline lexical retrieval |
 | Report Composer | Generate structured draft audit report sections | Planned |
 | Evidence Judge | Verify that each finding is supported by objective evidence | Planned |
 | AuditReport Schema | Validate the structure of the draft audit report | Implemented with mock data |
@@ -129,12 +131,15 @@ The current dataset is a development sample and does not replace an authorized c
 
 ## API Contract
 
-| Method | Endpoint | Request Model | Response Model | Iteration 1 Behavior |
+| Method | Endpoint | Request Model | Response Model | Current Behavior |
 |---|---|---|---|---|
 | GET | `/` | None | Status message | Returns API status |
 | POST | `/audits/ingest` | `AuditIngestRequest` | `AuditIngestResponse` | Validates and stores evidence in memory |
+| POST | `/knowledge/search` | `RetrievalRequest` | `list[RetrievalResult]` | Returns ranked ISO knowledge documents |
 
 The `POST /audits/ingest` endpoint uses FastAPI's `response_model` to validate the response against the `AuditIngestResponse` Pydantic model.
+
+The `POST /knowledge/search` endpoint retrieves and ranks relevant ISO knowledge documents and validates the response against a list of `RetrievalResult` models.
 
 ## Pydantic Schemas
 
