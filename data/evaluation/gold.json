@@ -1,0 +1,104 @@
+{
+  "dataset_id": "gap-report-derived-v1",
+  "review_status": "draft",
+  "target_standard": "ISO/IEC 27001:2022",
+  "annotation_note": "Project-authored reference annotations for the adapted inputs. The source report uses ISO 27001:2013 and does not provide major/minor labels. These annotations require team review against the 2022 requirements before final evaluation.",
+  "rubric": {
+    "major_nc": "Evidence demonstrates absence or systemic failure of a required management-system process.",
+    "minor_nc": "Evidence demonstrates a specific requirement failure without sufficient support for a systemic failure.",
+    "observation": "Evidence identifies a concern but is insufficient to establish a specific nonconformity.",
+    "ofi": "Evidence supports a practical improvement without demonstrating a requirement failure."
+  },
+  "cases": [
+    {
+      "case_id": "GAP-001",
+      "classification": "minor_nc",
+      "clause_ref": "4.3",
+      "requirement_text_id": "ISO27001-4.3",
+      "reference_finding": "The defined ISMS scope has not been documented.",
+      "rationale": "Clause 4.3 requires documented scope. The input confirms that the scope is defined and understood but undocumented. The project rubric treats this documented-information failure as minor unless further evidence establishes a systemic failure.",
+      "expected_needs_human_review": true
+    },
+    {
+      "case_id": "GAP-002",
+      "classification": "observation",
+      "clause_ref": "5.2",
+      "requirement_text_id": "ISO27001-5.2",
+      "reference_finding": "The information security policy has been identified for review, but the available evidence does not establish a specific policy deficiency.",
+      "rationale": "A policy exists. A recommendation to review it does not establish missing required content or failed communication. The source report's NC label is not adopted automatically for the adapted 2022 case.",
+      "expected_needs_human_review": true
+    },
+    {
+      "case_id": "GAP-003",
+      "classification": "observation",
+      "clause_ref": "5.3",
+      "requirement_text_id": "ISO27001-5.3",
+      "reference_finding": "The review identifies incomplete information about security roles, but assignment and communication of responsibilities remain unverified.",
+      "rationale": "Clause 5.3 concerns assignment and communication. The input identifies an incomplete list but does not establish that required responsibilities are unassigned or uncommunicated.",
+      "expected_needs_human_review": true
+    },
+    {
+      "case_id": "GAP-004",
+      "classification": "major_nc",
+      "clause_ref": "6.1.2",
+      "requirement_text_id": "ISO27001-6.1.2",
+      "reference_finding": "An information security risk assessment process has not been established and applied.",
+      "rationale": "The input explicitly states that the process is absent and the assessment has not been performed. Under the project rubric, absence of this required management-system process supports a major classification.",
+      "expected_needs_human_review": true
+    },
+    {
+      "case_id": "GAP-005",
+      "classification": "major_nc",
+      "clause_ref": "6.1.3",
+      "requirement_text_id": "ISO27001-6.1.3",
+      "reference_finding": "An information security risk treatment process has not been established and applied.",
+      "rationale": "The input describes an absent process, not an isolated delay within an established process. Planned future treatment does not establish current implementation.",
+      "expected_needs_human_review": true
+    },
+    {
+      "case_id": "GAP-006",
+      "classification": "major_nc",
+      "clause_ref": "6.2",
+      "requirement_text_id": "ISO27001-6.2",
+      "reference_finding": "Information security objectives and their measurement arrangements have not been defined.",
+      "rationale": "The adapted input describes absence of ISMS objectives and associated measurements. The project rubric treats this as a systemic planning failure, subject to confirmation of the organizational scope.",
+      "expected_needs_human_review": true
+    },
+    {
+      "case_id": "GAP-007",
+      "classification": "observation",
+      "clause_ref": "7.2",
+      "requirement_text_id": "ISO27001-7.2",
+      "reference_finding": "Competence is checked at recruitment, but the available evidence does not establish how required competence and supporting records are maintained.",
+      "rationale": "The absence of a particular post-employment check alone does not establish failure of clause 7.2. Required competence, competence evidence and the effectiveness of applicable actions need further examination.",
+      "expected_needs_human_review": true
+    },
+    {
+      "case_id": "GAP-008",
+      "classification": "observation",
+      "clause_ref": "7.3",
+      "requirement_text_id": "ISO27001-7.3",
+      "reference_finding": "Staff receive security updates by email, but their awareness of the required ISMS topics has not been established by the available evidence.",
+      "rationale": "Clause 7.3 requires awareness, not a specific course format. A missing formal training programme does not by itself prove lack of awareness.",
+      "expected_needs_human_review": true
+    },
+    {
+      "case_id": "GAP-009",
+      "classification": "ofi",
+      "clause_ref": "7.5.3",
+      "requirement_text_id": "ISO27001-7.5.3",
+      "reference_finding": "ISMS document retrieval could be improved by organizing documents for easier access.",
+      "rationale": "The input identifies slow retrieval but no required document unavailable when needed. It supports an improvement opportunity without demonstrating a specific requirement failure.",
+      "expected_needs_human_review": false
+    },
+    {
+      "case_id": "GAP-010",
+      "classification": "observation",
+      "clause_ref": "9.2.2",
+      "requirement_text_id": "ISO27001-9.2.2",
+      "reference_finding": "The review identifies a need to strengthen ISMS audit planning and auditor preparation; the current programme's adequacy requires verification.",
+      "rationale": "The input recommends planning, scheduling and training, but does not explicitly establish that no ISMS audit programme exists or that required audits were missed.",
+      "expected_needs_human_review": true
+    }
+  ]
+}
