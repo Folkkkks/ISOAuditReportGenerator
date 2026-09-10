@@ -2,8 +2,8 @@ import json
 import os
 
 from dotenv import load_dotenv
-from google import genai
 
+from backend.services.gemini_client import create_gemini_client
 from backend.models.evidence_judgment import (
     EvidenceJudgeRequest,
     EvidenceJudgeResponse,
@@ -174,7 +174,7 @@ def judge_report(
 
     deterministic_checks = _build_deterministic_checks(request)
 
-    client = genai.Client(api_key=api_key)
+    client = create_gemini_client(api_key)
     interaction = client.interactions.create(
         model=model_name,
         input=build_evidence_judge_prompt(

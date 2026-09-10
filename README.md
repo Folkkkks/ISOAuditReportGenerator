@@ -1,6 +1,6 @@
 # ISO Audit Report Generator
 
-An AI-enabled system designed to transform raw audit evidence into a structured draft audit report for ISO/IEC 27001:2022.
+An AI-enabled system that transforms raw audit evidence into structured draft audit reports for ISO/IEC 27001:2022. Every generated report requires auditor review and sign-off.
 
 ## Members
 
@@ -8,159 +8,127 @@ An AI-enabled system designed to transform raw audit evidence into a structured 
 - Teeraphat Yodyotee
 - Sasikan Saenchanta
 
-## Status
+## Project status
 
-**Iteration 1 – Walking Skeleton Completed**
-**Iteration 2 – In Progress (Weeks 4–8 Completed)**
+- **Iteration 1 — Walking Skeleton:** released as `v0.1.0`
+- **Iteration 2 — AI Core:** completed and evaluated
+- **Iteration 3 — Demo Day Product:** planned
 
-## Architectural Summary
+## Problem and solution
 
-The ISO Audit Report Generator helps lead auditors transform raw audit notes, interview records, and checklist results into structured draft audit reports. The intended output includes an executive summary, classified findings, objective evidence, ISO clause references, and suggested corrective actions.
+Lead auditors spend significant time converting raw notes, checklists, interview records, and document-review results into formal findings reports. This project accepts a text evidence bundle and produces a Pydantic-validated draft report containing:
 
-Iteration 1 implemented the Pydantic schemas, evidence-ingest API, request and response validation, sample input/output, and initial architecture.
+- an executive summary;
+- findings classified as `major_nc`, `minor_nc`, `observation`, or `ofi`;
+- ISO clause and knowledge-document references;
+- objective evidence;
+- suggested corrective actions; and
+- questions requiring human review.
 
-Iteration 2 currently includes the ISO 27001 knowledge base, lexical RAG retrieval, Gemini NC Classifier, Gemini Report Composer, and Evidence Judge. Evidence normalization, a dedicated Clause Mapper, UI, workflow orchestration, and evaluation remain planned. All generated reports require auditor review and sign-off.
+The system never issues a certification decision or publishes a report automatically.
 
-## Problem and Solution
+## Users and primary use cases
 
-Lead auditors spend significant time converting raw notes, checklists, interview records, and document-review results into formal audit reports.
+- **Lead auditor:** submits audit evidence and receives structured draft report sections.
+- **Audit manager:** reviews classifications and report content before client delivery.
 
-The ISO Audit Report Generator is designed to accept an audit evidence bundle and produce a structured draft report. The system will classify findings as Major NC, Minor NC, Observation, or OFI and ensure that each finding is grounded in objective evidence.
-
-## Users and Primary Use Cases
-
-- **Lead Auditor:** submits audit evidence and receives structured draft report sections.
-- **Audit Manager:** reviews finding classifications and report content before client delivery.
-
-Primary use case:
-
-> A Lead Auditor submits an audit evidence bundle and receives a structured draft audit report for human review and sign-off.
+The primary use case is a lead auditor submitting an evidence bundle and receiving a structured draft report for human review and sign-off.
 
 ## Scope
 
-### In Scope
+### In scope
 
-- ISO/IEC 27001:2022
-- Audit evidence intake and normalization
-- Audit observations
-- Finding classification
-- ISO clause and control mapping
-- Objective evidence
+- ISO/IEC 27001:2022 evidence and requirement references
+- Text evidence intake for report generation
+- Finding classification and clause mapping
+- Objective-evidence grounding
 - Corrective-action suggestions
-- Executive summary and structured report generation
+- Executive-summary and report generation
 - Human review and auditor sign-off
 
-### Out of Scope
+### Out of scope
 
-- Issuing official audit certificates
+- Issuing official audit certificates or compliance verdicts
 - Audit scheduling and logistics
 - On-site photo or video analysis
-- Automatic publication of reports to clients
+- Automatic publication to clients
 
-## Progress
-
-- [x] Week 2: Audit Report Schemas
-- [x] Week 3: Evidence Ingest API
-- [x] Week 4: ISO 27001 Knowledge Base Setup
-- [x] Week 5: RAG Retrieval Pipeline
-- [x] Week 6: NC Classifier Agent
-- [x] Week 7: Report Composer Agent
-- [x] Week 8: Evidence Judge Agent
-- [ ] Week 9: Frontend UI
-- [ ] Week 10: Report Viewer
-- [ ] Week 11: Export PDF / Markdown
-- [ ] Week 12: Evaluation & Demo Preparation
-
-## System Architecture
-
-The diagram below represents the planned target architecture. Components marked as planned are documented in Iteration 1 but are not implemented yet.
+## Current architecture
 
 ```mermaid
 flowchart TD
-    A[Lead Auditor / Audit Evidence Bundle]
-    A --> B[FastAPI Entry Point]
-
-    B --> C[Evidence Normalizer - Planned]
-    C --> D[NC Classifier Agent]
-    D --> E[Clause Mapper - Planned]
-
-    K[ISO 27001 Knowledge Base]
-    K --> R[Retrieval Pipeline]
-    R --> E
-
-    E --> F[Report Composer]
+    A[Audit evidence] --> B[FastAPI / pipeline]
+    B --> C[Lexical KB retrieval]
+    C --> D[Retrieval-based classifier router]
+    D --> E[Gemini NC classifier]
+    E --> F[Gemini report composer]
     F --> G[Evidence Judge]
-    G --> H[AuditReport Pydantic Schema]
-    H --> I[Draft Audit Report for Auditor Review]
+    G --> H[AuditReport validation]
+    H --> I[Draft for auditor review]
 ```
 
-## Agent Responsibilities
+The classifier router chooses a management-system, Annex A, or mixed specialist instruction path from retrieved ISO references. The Evidence Judge combines deterministic evidence/reference checks with a structured Gemini judgment. A report that fails the Judge is blocked from the public pipeline response and marked `needs_revision`.
 
-| Agent / Component | Responsibility | Current Status |
-|---|---|---|
-| FastAPI Entry Point | Receive and validate audit evidence bundles | Implemented |
-| Evidence Normalizer | Structure raw audit evidence into observations | Planned |
-| NC Classifier | Classify findings as Major NC, Minor NC, Observation, or OFI | Implemented with Gemini structured output |
-| Clause Mapper | Map findings to ISO/IEC 27001:2022 clauses or controls | Planned |
-| ISO 27001 Knowledge Base | Provide grounded requirement and control information | Implemented with local JSON data and Pydantic validation |
-| Retrieval Pipeline | Rank relevant ISO knowledge for submitted evidence | Implemented with baseline lexical retrieval |
-| Report Composer | Generate structured draft audit reports using Gemini with grounding validation | Implemented |
-| Evidence Judge | Verify findings against source evidence and knowledge-base references | Implemented |
-| AuditReport Schema | Validate the structure of the draft audit report | Implemented and used by Report Composer |
+## Components
 
-## ISO 27001 Knowledge Base
+| Component | Responsibility | Status |
+| --- | --- | --- |
+| FastAPI | Validate requests and expose system endpoints | Implemented |
+| ISO knowledge base | Store project-authored ISO 27001 summaries and reference IDs | Implemented |
+| Retrieval pipeline | Rank relevant knowledge documents using lexical retrieval | Implemented |
+| Classifier router | Select a specialist instruction path from retrieved references | Implemented |
+| NC Classifier | Classify evidence and return grounded structured output | Implemented |
+| Report Composer | Generate a Pydantic-validated `AuditReport` | Implemented |
+| Evidence Judge | Check evidence support and reference validity | Implemented |
+| Evaluation runner | Compare pipeline outputs with authored Gold labels | Implemented |
+| Evidence Normalizer | Create explicit `AuditObservation` objects | Planned |
+| Dedicated Clause Mapper | Separate clause mapping from classification | Planned |
+| Report review UI and export | Human review and PDF/Markdown delivery | Planned for Iteration 3 |
 
-Week 4 implements a local ISO/IEC 27001:2022 knowledge base for development and testing.
+## Progress
 
-The knowledge base includes:
+- [x] Week 2: Audit report schemas
+- [x] Week 3: Evidence ingest API
+- [x] Week 4: ISO 27001 knowledge base setup
+- [x] Week 5: Retrieval pipeline
+- [x] Week 6: NC Classifier and retrieval-based router
+- [x] Week 7: Report Composer and end-to-end pipeline
+- [x] Week 8: Evidence Judge and Gold-set evaluation
+- [ ] Weeks 9–12: UI, report review, security guardrails, prompt versioning, and export
 
-- Structured control references and project-authored summaries
-- Keywords for future retrieval
-- Source notes requiring verification against an authorized ISO copy
-- Pydantic validation through `KnowledgeDocument` and `KnowledgeBase`
-- A reusable loader for the planned RAG retrieval pipeline
+## API endpoints
 
-Validate the knowledge base from the repository root:
+| Method | Endpoint | Behavior |
+| --- | --- | --- |
+| `GET` | `/` | Return API status |
+| `POST` | `/audits/ingest` | Validate and store an evidence bundle in memory |
+| `POST` | `/knowledge/search` | Return ranked ISO knowledge documents |
+| `POST` | `/findings/classify` | Retrieve context and classify one evidence item |
+| `POST` | `/reports/compose` | Compose a structured draft report |
+| `POST` | `/reports/judge` | Judge report findings against evidence and KB references |
+| `POST` | `/reports/run` | Run composition and Judge gating end to end |
 
-```powershell
-py -m backend.test_knowledge_base
-```
+Interactive API documentation is available at `http://127.0.0.1:8000/docs` while the server is running.
 
-The current dataset is a development sample and does not replace an authorized copy of ISO/IEC 27001:2022.
+## Pydantic schemas
 
-
-## API Contract
-
-| Method | Endpoint | Request Model | Response Model | Current Behavior |
-|---|---|---|---|---|
-| GET | `/` | None | Status message | Returns API status |
-| POST | `/audits/ingest` | `AuditIngestRequest` | `AuditIngestResponse` | Validates and stores evidence in memory |
-| POST | `/knowledge/search` | `RetrievalRequest` | `list[RetrievalResult]` | Returns ranked ISO knowledge documents |
-| POST | `/findings/classify` | `ClassificationRequest` | `ClassificationResult` | Retrieves ISO context and classifies evidence with Gemini |
-| POST | `/reports/compose` | `ReportComposeRequest` | `AuditReport` | Classifies evidence and generates a grounded draft audit report |
-| POST | `/reports/judge` | `EvidenceJudgeRequest` | `EvidenceJudgeResponse` | Verifies findings against source evidence and knowledge references |
-
-The `POST /audits/ingest` endpoint uses FastAPI's `response_model` to validate the response against the `AuditIngestResponse` Pydantic model.
-
-The `POST /knowledge/search` endpoint retrieves and ranks relevant ISO knowledge documents and validates the response against a list of `RetrievalResult` models.
-
-
-## Pydantic Schemas
-
-The project includes the following main report schemas:
+The main report and pipeline models include:
 
 - `AuditObservation`
 - `AuditFinding`
 - `AuditReport`
-- `EvidenceItem`
-- `AuditIngestRequest`
-- `AuditIngestResponse`
+- `AuditIngestRequest` and `AuditIngestResponse`
+- `ClassificationRequest` and `ClassificationResult`
+- `ReportComposeRequest`
+- `EvidenceJudgeRequest` and `EvidenceJudgeResponse`
+- `PipelineResponse`
+- `GoldFinding` and `GoldDataset`
 
-The report schemas define the intended structured output of the future AI pipeline. The ingest schemas validate the request and response currently used by the FastAPI stub.
+Structured Gemini responses are validated before they are returned or scored.
 
-## Sample Input
+## Sample ingest request
 
-The following request body can be submitted to `POST /audits/ingest`:
+Submit the following body to `POST /audits/ingest`:
 
 ```json
 {
@@ -179,195 +147,258 @@ The following request body can be submitted to `POST /audits/ingest`:
 }
 ```
 
-## Sample API Response
+The endpoint validates and stores the evidence in memory, returning an `AuditIngestResponse` containing the generated `audit_id`, submitted fields, and `status: ingested`.
 
-The following response is returned by `POST /audits/ingest` and validated by the `AuditIngestResponse` Pydantic model:
+## Sample structured report
 
-```json
-{
-  "audit_id": "example-generated-uuid",
-  "org_name": "Acme Corp",
-  "standard": "ISO/IEC 27001:2022",
-  "evidence": [
-    {
-      "source": "interview",
-      "raw_text": "No access review records were available during the audit."
-    },
-    {
-      "source": "checklist",
-      "raw_text": "Privileged user access review was not performed in the last 12 months."
-    }
-  ],
-  "status": "ingested"
-}
-```
-
-## Sample AuditReport Schema Output (Mock)
-
-The following output is mock data defined in `backend/test_schemas.py`. It demonstrates that the intended `AuditReport` structure can be validated by Pydantic. It is not currently generated automatically from the ingest request.
+The report pipeline returns the following shape. The content below is abbreviated example data; live content is generated and validated at runtime.
 
 ```json
 {
   "org_name": "Acme Corp",
-  "audit_date": "2026-09-04",
+  "audit_date": "2026-09-10",
   "standard": "ISO/IEC 27001:2022",
-  "executive_summary": "The audit identified one major nonconformity related to access review.",
+  "executive_summary": "Draft summary for auditor review.",
   "findings": [
     {
       "finding_id": "F-001",
       "clause_ref": "A.5.18",
-      "classification": "major_nc",
-      "finding_statement": "Access reviews were not performed.",
+      "classification": "minor_nc",
+      "finding_statement": "A periodic privileged-access review was not performed.",
       "objective_evidence": [
-        "Access reviews were not performed or documented."
+        "Privileged user access review was not performed in the last 12 months."
       ],
       "requirement_text_id": "ISO27001-A.5.18",
-      "suggested_corrective_action": "Establish and document periodic access reviews."
+      "suggested_corrective_action": "Define and document a periodic access-review process."
     }
   ],
-  "open_questions": [
-    "Confirm access review frequency."
-  ],
+  "open_questions": [],
   "disclaimer": "Draft report for auditor review and sign-off only."
 }
 ```
 
-## Repository Layout
+## Knowledge base and evaluation data
+
+The project uses:
+
+- project-authored summaries for selected ISO/IEC 27001:2022 clauses and Annex A controls;
+- an instructor-approved sample ISO 27001 gap-analysis report as the source for paraphrased development cases;
+- 10 synthetic, independently runnable evidence cases;
+- authored reference labels and clause/document pairs in `data/evaluation/gold.json`; and
+- Pydantic validation that checks input/Gold alignment and verifies every Gold reference exists in the KB.
+
+The repository does not redistribute the complete ISO standard. The Gold annotations currently have `review_status: draft`; they are development references requiring team or instructor review and are not presented as instructor-verified labels.
+
+### RAG/KB sources
+
+- `data/knowledge_base/iso27001_controls.json`: project-authored requirement summaries and reference IDs used for retrieval
+- Instructor-approved ISO 27001 gap-analysis sample report: source for the paraphrased development evidence cases
+- Authorized ISO/IEC 27001:2022 and ISO/IEC 27002:2022 excerpts/references: used to review requirement and control references during development
+
+## Iteration 2 evaluation
+
+A completed run evaluated all 10 cases with Gemini 3.6 Flash.
+
+| Metric | Result |
+| --- | ---: |
+| Pipeline coverage | 10/10 (100%) |
+| Classification accuracy | 8/10 (80%) |
+| Classification macro F1 | 81.25% |
+| Exact clause + requirement ID accuracy | 100% |
+| Automated grounding score | 100% |
+| Automated unsupported finding rate | 0% |
+| Automated unsupported major findings | 0 |
+
+`GAP-007` and `GAP-010` were predicted as `minor_nc` while the draft Gold labels are `observation`. These disagreements remain visible in the evaluation report rather than changing Gold labels to match model output.
+
+The scores are development results on authored cases, not a held-out benchmark. Judge metrics are automated checks and do not replace qualified auditor review. See the checked-in Iteration 2 `eval_report.md` for denominators and per-case results.
+
+## Repository layout
+
+The local `.env`, virtual environment, Python caches, and timestamped evaluation
+runs are intentionally omitted from this repository view.
 
 ```text
-WorkProject-ISOAuditReportGenerator/
+ISOAuditReportGenerator/
 ├── backend/
+│   ├── agents/
+│   │   ├── __init__.py
+│   │   ├── classifier_router.py
+│   │   ├── evidence_judge.py
+│   │   ├── nc_classifier.py
+│   │   └── report_composer.py
 │   ├── models/
+│   │   ├── classification.py
+│   │   ├── evaluation.py
+│   │   ├── evidence_judgment.py
+│   │   ├── knowledge_base.py
+│   │   ├── pipeline.py
+│   │   ├── report_composition.py
+│   │   ├── retrieval.py
+│   │   └── schemas.py
+│   ├── services/
+│   │   ├── __init__.py
+│   │   ├── evaluation_data.py
+│   │   ├── evaluation_metrics.py
+│   │   ├── gemini_client.py
+│   │   ├── knowledge_base.py
+│   │   ├── pipeline.py
+│   │   └── retrieval.py
 │   ├── app.py
+│   ├── evaluate.py
+│   ├── setup_iteration2_kb.py
+│   ├── test_classifier.py
+│   ├── test_classifier_router.py
+│   ├── test_evaluation_data.py
+│   ├── test_evaluation_metrics.py
+│   ├── test_evaluation_runner.py
+│   ├── test_evidence_judge.py
+│   ├── test_knowledge_base.py
+│   ├── test_report_composer.py
+│   ├── test_retrieval.py
 │   └── test_schemas.py
 ├── data/
+│   ├── evaluation/
+│   │   ├── gold.json
+│   │   └── inputs.json
+│   ├── knowledge_base/
+│   │   └── iso27001_controls.json
+│   └── .gitkeep
 ├── prompts/
+│   └── .gitkeep
 ├── reports/
+│   ├── iteration2/
+│   │   └── eval_report.md
+│   └── .gitkeep
 ├── static/
+│   └── .gitkeep
 ├── templates/
+│   └── .gitkeep
 ├── .env.example
 ├── .gitignore
 ├── README.md
 └── requirements.txt
 ```
 
-## How to Run
+`reports/evaluation/<run-id>/` is generated locally for timestamped raw run
+artifacts. The stable `reports/iteration2/eval_report.md` is the report selected
+for the Iteration 2 release.
 
-### 1. Create a virtual environment
+## Setup
+
+Python 3.10 or newer is required.
 
 ```powershell
 py -m venv .venv
-```
-
-### 2. Activate the virtual environment
-
-```powershell
 .\.venv\Scripts\Activate.ps1
-```
-
-If PowerShell blocks script execution, allow it for the current Terminal session:
-
-```powershell
-Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
-.\.venv\Scripts\Activate.ps1
-```
-
-### 3. Install dependencies
-
-```powershell
 python -m pip install -r requirements.txt
 ```
 
-### 4. Test the Pydantic report schemas
+Create a local `.env` file from `.env.example` and configure the required values:
 
-```powershell
-python backend/test_schemas.py
+```dotenv
+GOOGLE_API_KEY=your_api_key_here
+GEMINI_MODEL=gemini-3.6-flash
+GEMINI_TIMEOUT_SECONDS=120
 ```
 
-Expected result: the Terminal displays a structured mock `AuditReport` JSON response without errors.
+Never commit `.env` or API keys.
 
-### 5. Start the FastAPI server
+## Validate and run
+
+Initialize/extend the development knowledge base, then run its validation and retrieval tests:
+
+```powershell
+python -m backend.setup_iteration2_kb
+python -m backend.test_knowledge_base
+python -m backend.test_retrieval
+```
+
+Run the offline validations and tests:
+
+```powershell
+python -m compileall -q backend
+python -m backend.test_schemas
+python -m backend.test_classifier_router
+python -m backend.test_evaluation_data
+python -m unittest backend.test_evaluation_metrics backend.test_evaluation_runner
+```
+
+The classifier, composer, Judge, and full evaluation commands make real Gemini
+API calls and therefore use the configured project's quota.
+
+Start FastAPI:
 
 ```powershell
 python -m uvicorn backend.app:app --reload
 ```
 
-### 6. Open the application
+## Run the evaluation
 
-- API status: http://127.0.0.1:8000
-- Swagger UI: http://127.0.0.1:8000/docs
+Validate the evaluation data without making API calls:
 
-Use Swagger UI to test `POST /audits/ingest` with the sample request shown above.
+```powershell
+python -m backend.evaluate --dry-run
+```
 
-## Iteration 1 Demo Flow
+Run a smoke test on the first case:
 
-1. Run `backend/test_schemas.py` to validate the mock `AuditReport`.
-2. Start the FastAPI server.
-3. Open Swagger UI at `/docs`.
-4. Submit the sample evidence bundle to `POST /audits/ingest`.
-5. Confirm that the endpoint returns HTTP `200`.
-6. Confirm that the response matches the `AuditIngestResponse` Pydantic schema.
-7. Review the planned architecture and deferred AI components.
+```powershell
+python -m backend.evaluate --limit 1
+```
 
-## Known Limitations
+Run all cases:
 
-- The `/audits/ingest` endpoint stores evidence in an in-memory dictionary.
-- Stored data is lost when the FastAPI server restarts.
-- The implemented agent endpoints are not yet connected as one automatic end-to-end workflow.
-- Evidence Normalizer and the dedicated Clause Mapper are not yet implemented.
-- Gemini-generated classifications, reports, and judgments require qualified auditor review.
-- Semantic/vector retrieval, UI, workflow orchestration, and evaluation are not yet implemented.
-- The current RAG retrieval pipeline uses baseline lexical ranking over a development knowledge-base sample.
+```powershell
+python -m backend.evaluate
+```
 
-## Design Foresight and Next Iterations
+Each run writes `results.json`, `gold_reports.json`, and `eval_report.md` under `reports/evaluation/<run-id>/`. Interrupted, timed-out, and rate-limited cases remain visible; missing predictions stay in the metric denominator. A saved run can continue pending or failed cases:
 
-### Iteration 2 – AI Core (`v0.2.0`)
+```powershell
+python -m backend.evaluate --resume ".\reports\evaluation\<run-id>"
+```
 
-Current progress:
+Gemini Free Tier quotas may require the evaluation to continue later. The runner preserves completed cases and stops when it detects a rate-limit error.
 
-1. ISO/IEC 27001:2022 Knowledge Base — Completed
-2. Baseline lexical RAG retrieval — Completed
-3. Gemini structured-output integration — Completed
-4. NC Classifier Agent — Completed
-5. Report Composer Agent — Completed
-6. Evidence Judge and grounding checks — Completed
-7. Evidence Normalizer — Planned
-8. Dedicated Clause Mapper — Planned
-9. Evaluation using a gold subset and defined metrics — Planned
+## Security and human review
 
-### Iteration 3 – Product and Demo (`v1.0.0`)
+- Treat submitted evidence as untrusted input.
+- Keep API keys in local environment variables.
+- Do not redistribute full licensed ISO documents.
+- Do not present generated content as an official certification verdict.
+- Do not automatically publish generated reports to clients.
+- Require a qualified auditor to review and sign off every report.
 
-Planned work:
+## Known limitations
 
-- Frontend and report-review UI
-- Human review and auditor sign-off workflow
-- Report viewer
-- PDF and Markdown export
-- Security guardrails
-- Full gold-set evaluation
-- Demo preparation and demo video
+- Gold labels remain draft pending expert review.
+- Retrieval is a lexical baseline rather than vector/embedding retrieval.
+- The ingest store is in memory and resets with the API process.
+- Evidence normalization and clause mapping are not yet separate agents.
+- The current evaluation set is small and development-authored.
+- The UI, override audit trail, prompt registry, security test pack, and report export are planned for Iteration 3.
 
-## Security and Human Review
+## Iteration history and roadmap
 
-- Audit evidence must be treated as untrusted input.
-- Secrets and API keys must never be committed to GitHub.
-- Environment-variable names are documented in `.env.example`.
-- Generated reports must never be automatically published to clients.
-- Every generated report is a draft for auditor review and sign-off only.
+### Iteration 1 — `v0.1.0`
 
-## Release
+The walking skeleton established the Pydantic schemas, evidence-ingest API, sample input/output, repository structure, architecture diagram, and FastAPI documentation. Its demo flow validated a mock `AuditReport`, started FastAPI, submitted evidence through Swagger UI, and confirmed the structured response.
 
-Iteration 1 is published as GitHub Release `v0.1.0`.
+### Iteration 2 — `v0.2.0`
 
-The release includes:
+The AI core adds the knowledge base, lexical retrieval, classifier router, real structured Gemini calls, Report Composer, Evidence Judge, end-to-end report gating, development Gold data, evaluation runner, and metrics report.
 
-- Pydantic schemas
-- FastAPI evidence-ingest stub
-- Valid Pydantic request and response models
-- Sample input and structured output
-- System architecture diagram
-- Release notes
+### Iteration 3 — `v1.0.0`
+
+Planned work includes the report-review UI, auditor overrides and audit trail, security tests and guardrails, prompt versioning, PDF/Markdown export, full reviewed Gold evaluation, demo script, and demo video.
+
+## Releases
+
+- `v0.1.0`: Iteration 1 walking skeleton
+- `v0.2.0`: Iteration 2 AI core
+- `v1.0.0`: Demo Day product (planned)
 
 ## Disclaimer
 
-This project currently produces mock and draft outputs for educational development and testing. All audit findings and reports require review and sign-off by a qualified auditor before use.
+This educational project produces draft audit content only. All findings, classifications, corrective-action suggestions, and reports require review and sign-off by a qualified auditor before use.

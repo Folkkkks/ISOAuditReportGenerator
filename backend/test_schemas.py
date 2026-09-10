@@ -1,6 +1,10 @@
 from datetime import date
 
-from models.schemas import AuditFinding, AuditObservation, AuditReport
+from backend.models.schemas import (
+    AuditFinding,
+    AuditObservation,
+    AuditReport,
+)
 
 
 observation = AuditObservation(

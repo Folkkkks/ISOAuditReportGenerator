@@ -1,5 +1,5 @@
 pydantic
 fastapi
 uvicorn
-google-genai
+google-genai==2.22.0
 python-dotenv

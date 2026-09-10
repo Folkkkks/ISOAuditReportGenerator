@@ -1,8 +1,8 @@
 import os
 
 from dotenv import load_dotenv
-from google import genai
 
+from backend.services.gemini_client import create_gemini_client
 from backend.models.classification import ClassificationResult
 from backend.models.retrieval import RetrievalResult
 from backend.services.retrieval import retrieve_documents
@@ -90,7 +90,7 @@ def classify_evidence(
             "GOOGLE_API_KEY is not configured"
         )
 
-    client = genai.Client(api_key=api_key)
+    client = create_gemini_client(api_key)
 
     interaction = client.interactions.create(
         model=model_name,
