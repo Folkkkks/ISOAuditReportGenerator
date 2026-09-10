@@ -16,6 +16,8 @@ from backend.models.evidence_judgment import (
     EvidenceJudgeRequest,
     EvidenceJudgeResponse,
 )
+from backend.models.pipeline import PipelineResponse
+from backend.services.pipeline import run_report_pipeline
 
 app = FastAPI(title="ISO Audit Report Generator API")
 
@@ -94,3 +96,13 @@ def judge_audit_report(
     request: EvidenceJudgeRequest,
 ):
     return judge_report(request)
+
+
+@app.post(
+    "/reports/run",
+    response_model=PipelineResponse,
+)
+def run_audit_report(
+    request: ReportComposeRequest,
+):
+    return run_report_pipeline(request)

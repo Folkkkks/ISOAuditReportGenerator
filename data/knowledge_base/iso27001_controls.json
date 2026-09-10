@@ -56,6 +56,144 @@
         "revocation"
       ],
       "source_note": "Project-authored summary; verify against an authorized copy of ISO/IEC 27001:2022 before audit use."
+    },
+    {
+      "document_id": "ISO27001-4.3",
+      "standard": "ISO/IEC 27001:2022",
+      "reference": "4.3",
+      "title": "ISMS scope",
+      "summary": "Define and document the ISMS boundaries and applicability, considering organizational context, interested-party requirements, and interfaces or dependencies with other organizations.",
+      "keywords": [
+        "scope",
+        "boundaries",
+        "applicability",
+        "documented scope"
+      ],
+      "source_note": "Project-authored summary; checked against the supplied ISO/IEC 27001:2022 PDF, PDF pages 8, clause 4.3. Not verbatim ISO text. The approved 2013 gap-analysis report provides case context, not the authority for this 2022 requirement."
+    },
+    {
+      "document_id": "ISO27001-5.2",
+      "standard": "ISO/IEC 27001:2022",
+      "reference": "5.2",
+      "title": "Information security policy",
+      "summary": "Management establishes an appropriate information security policy covering objectives or their framework, applicable requirements, and continual improvement. Document and communicate the policy and make it available to relevant interested parties as appropriate.",
+      "keywords": [
+        "information security policy",
+        "policy",
+        "communication"
+      ],
+      "source_note": "Project-authored summary; checked against the supplied ISO/IEC 27001:2022 PDF, PDF pages 9, clause 5.2. Not verbatim ISO text. The approved 2013 gap-analysis report provides case context, not the authority for this 2022 requirement."
+    },
+    {
+      "document_id": "ISO27001-5.3",
+      "standard": "ISO/IEC 27001:2022",
+      "reference": "5.3",
+      "title": "Information security roles and responsibilities",
+      "summary": "Assign and communicate responsibilities and authorities for information security roles, including ISMS conformity and reporting ISMS performance to management.",
+      "keywords": [
+        "roles",
+        "responsibilities",
+        "authorities",
+        "assignment"
+      ],
+      "source_note": "Project-authored summary; checked against the supplied ISO/IEC 27001:2022 PDF, PDF pages 9, clause 5.3. Not verbatim ISO text. The approved 2013 gap-analysis report provides case context, not the authority for this 2022 requirement."
+    },
+    {
+      "document_id": "ISO27001-6.1.2",
+      "standard": "ISO/IEC 27001:2022",
+      "reference": "6.1.2",
+      "title": "Information security risk assessment process",
+      "summary": "Define, document and apply a repeatable risk assessment process. Set assessment and acceptance criteria, identify risks and owners, analyse likelihood and consequences, and evaluate priorities.",
+      "keywords": [
+        "risk assessment",
+        "risk criteria",
+        "risk owners",
+        "methodology"
+      ],
+      "source_note": "Project-authored summary; checked against the supplied ISO/IEC 27001:2022 PDF, PDF pages 10, clause 6.1.2. Not verbatim ISO text. The approved 2013 gap-analysis report provides case context, not the authority for this 2022 requirement."
+    },
+    {
+      "document_id": "ISO27001-6.1.3",
+      "standard": "ISO/IEC 27001:2022",
+      "reference": "6.1.3",
+      "title": "Information security risk treatment process",
+      "summary": "Select risk treatment options and necessary controls using assessment results. Check coverage against Annex A, prepare a Statement of Applicability and treatment plan, and obtain risk owner approval of the plan and acceptance of residual risks. Retain documentation of the process.",
+      "keywords": [
+        "risk treatment",
+        "statement of applicability",
+        "residual risk"
+      ],
+      "source_note": "Project-authored summary; checked against the supplied ISO/IEC 27001:2022 PDF, PDF pages 10-11, clause 6.1.3. Not verbatim ISO text. The approved 2013 gap-analysis report provides case context, not the authority for this 2022 requirement."
+    },
+    {
+      "document_id": "ISO27001-6.2",
+      "standard": "ISO/IEC 27001:2022",
+      "reference": "6.2",
+      "title": "Information security objectives",
+      "summary": "Set documented information security objectives at relevant functions and levels. Monitor and communicate them, measure them where practicable, and plan actions, resources, responsibilities, completion dates and evaluation of results.",
+      "keywords": [
+        "objectives",
+        "targets",
+        "measurements",
+        "planning"
+      ],
+      "source_note": "Project-authored summary; checked against the supplied ISO/IEC 27001:2022 PDF, PDF pages 11, clause 6.2. Not verbatim ISO text. The approved 2013 gap-analysis report provides case context, not the authority for this 2022 requirement."
+    },
+    {
+      "document_id": "ISO27001-7.2",
+      "standard": "ISO/IEC 27001:2022",
+      "reference": "7.2",
+      "title": "Competence",
+      "summary": "Determine the competence needed for work affecting information security performance. Ensure suitable education, training or experience, evaluate competence-building actions where applicable, and retain appropriate evidence of competence.",
+      "keywords": [
+        "competence",
+        "skills",
+        "training effectiveness",
+        "qualifications"
+      ],
+      "source_note": "Project-authored summary; checked against the supplied ISO/IEC 27001:2022 PDF, PDF pages 12, clause 7.2. Not verbatim ISO text. The approved 2013 gap-analysis report provides case context, not the authority for this 2022 requirement."
+    },
+    {
+      "document_id": "ISO27001-7.3",
+      "standard": "ISO/IEC 27001:2022",
+      "reference": "7.3",
+      "title": "Awareness",
+      "summary": "People working under organizational control need awareness of the information security policy, their contribution to ISMS effectiveness, and the implications of failing to meet ISMS requirements. A missing formal course alone does not prove that people lack awareness.",
+      "keywords": [
+        "awareness",
+        "staff awareness",
+        "policy awareness",
+        "staff updates"
+      ],
+      "source_note": "Project-authored summary; checked against the supplied ISO/IEC 27001:2022 PDF, PDF pages 12, clause 7.3. Not verbatim ISO text. The approved 2013 gap-analysis report provides case context, not the authority for this 2022 requirement."
+    },
+    {
+      "document_id": "ISO27001-7.5.3",
+      "standard": "ISO/IEC 27001:2022",
+      "reference": "7.5.3",
+      "title": "Control of documented information",
+      "summary": "Keep required ISMS documentation available and suitable when needed, and protect it appropriately. Address access, retrieval, distribution, storage, preservation, change control, retention and disposal as applicable.",
+      "keywords": [
+        "document control",
+        "retrieval",
+        "version control",
+        "documents"
+      ],
+      "source_note": "Project-authored summary; checked against the supplied ISO/IEC 27001:2022 PDF, PDF pages 13, clause 7.5.3. Not verbatim ISO text. The approved 2013 gap-analysis report provides case context, not the authority for this 2022 requirement."
+    },
+    {
+      "document_id": "ISO27001-9.2.2",
+      "standard": "ISO/IEC 27001:2022",
+      "reference": "9.2.2",
+      "title": "Internal audit programme",
+      "summary": "Maintain an internal audit programme covering frequency, methods, responsibilities, planning and reporting. Define audit scope and criteria, ensure auditor objectivity, report results to relevant management, and retain evidence of programme execution and results.",
+      "keywords": [
+        "internal audit",
+        "audit programme",
+        "audit schedule",
+        "auditors"
+      ],
+      "source_note": "Project-authored summary; checked against the supplied ISO/IEC 27001:2022 PDF, PDF pages 15, clause 9.2.2. Not verbatim ISO text. The approved 2013 gap-analysis report provides case context, not the authority for this 2022 requirement."
     }
   ]
 }

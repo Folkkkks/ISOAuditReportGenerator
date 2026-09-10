@@ -2,8 +2,8 @@ import json
 import os
 
 from dotenv import load_dotenv
-from google import genai
 
+from backend.services.gemini_client import create_gemini_client
 from backend.agents.nc_classifier import classify_evidence
 from backend.models.classification import ClassificationResult
 from backend.models.report_composition import ReportComposeRequest
@@ -144,7 +144,7 @@ def compose_report(
             "GOOGLE_API_KEY is not configured"
         )
 
-    client = genai.Client(api_key=api_key)
+    client = create_gemini_client(api_key)
     interaction = client.interactions.create(
         model=model_name,
         input=build_report_prompt(

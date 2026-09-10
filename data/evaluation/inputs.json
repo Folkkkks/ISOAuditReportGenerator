@@ -1,0 +1,169 @@
+{
+  "dataset_id": "gap-report-derived-v1",
+  "description": "Ten development cases paraphrased from an instructor-approved sample report. Cases are evaluated independently.",
+  "source_document": "IT Governance Ltd, ISO 27001:2013 Gap Analysis Report SAMPLE, 2016",
+  "target_standard": "ISO/IEC 27001:2022",
+  "provenance_note": "Evidence is paraphrased from report observations, not original interview transcripts. Organization name and audit date are synthetic. The source report uses the 2013 edition; expected references must be reviewed against the 2022 edition.",
+  "cases": [
+    {
+      "case_id": "GAP-001",
+      "source_page": 6,
+      "request": {
+        "org_name": "Sample Organisation",
+        "audit_date": "2026-09-10",
+        "standard": "ISO/IEC 27001:2022",
+        "evidence": [
+          {
+            "source": "document_review",
+            "raw_text": "The ISMS scope was discussed at a recent management review. Its boundaries are defined and understood, but the scope has not yet been documented."
+          }
+        ],
+        "top_k": 3
+      }
+    },
+    {
+      "case_id": "GAP-002",
+      "source_page": 7,
+      "request": {
+        "org_name": "Sample Organisation",
+        "audit_date": "2026-09-10",
+        "standard": "ISO/IEC 27001:2022",
+        "evidence": [
+          {
+            "source": "document_review",
+            "raw_text": "An information security policy exists alongside other organizational policies. The review notes say it needs reviewing and updating, but do not identify which policy content is deficient or provide evidence about its communication."
+          }
+        ],
+        "top_k": 3
+      }
+    },
+    {
+      "case_id": "GAP-003",
+      "source_page": 7,
+      "request": {
+        "org_name": "Sample Organisation",
+        "audit_date": "2026-09-10",
+        "standard": "ISO/IEC 27001:2022",
+        "evidence": [
+          {
+            "source": "document_review",
+            "raw_text": "A few information security roles have been identified. The review notes call for a complete list of roles, responsibilities and required competences. They do not establish whether all responsibilities have been assigned and communicated."
+          }
+        ],
+        "top_k": 3
+      }
+    },
+    {
+      "case_id": "GAP-004",
+      "source_page": 7,
+      "request": {
+        "org_name": "Sample Organisation",
+        "audit_date": "2026-09-10",
+        "standard": "ISO/IEC 27001:2022",
+        "evidence": [
+          {
+            "source": "document_review",
+            "raw_text": "An information security risk assessment process is not in place. A methodology was identified in a management review meeting, but it has not been documented and the risk assessment has not been carried out. A risk assessment tool is being considered."
+          }
+        ],
+        "top_k": 3
+      }
+    },
+    {
+      "case_id": "GAP-005",
+      "source_page": 7,
+      "request": {
+        "org_name": "Sample Organisation",
+        "audit_date": "2026-09-10",
+        "standard": "ISO/IEC 27001:2022",
+        "evidence": [
+          {
+            "source": "document_review",
+            "raw_text": "The information security risk treatment process is not in place. The organization plans to carry out risk treatment after completing its risk assessment."
+          }
+        ],
+        "top_k": 3
+      }
+    },
+    {
+      "case_id": "GAP-006",
+      "source_page": 7,
+      "request": {
+        "org_name": "Sample Organisation",
+        "audit_date": "2026-09-10",
+        "standard": "ISO/IEC 27001:2022",
+        "evidence": [
+          {
+            "source": "document_review",
+            "raw_text": "Information security objectives still need to be defined. The organization also needs to define its measurements and explain how those measurements relate to the overall ISMS objectives."
+          }
+        ],
+        "top_k": 3
+      }
+    },
+    {
+      "case_id": "GAP-007",
+      "source_page": 8,
+      "request": {
+        "org_name": "Sample Organisation",
+        "audit_date": "2026-09-10",
+        "standard": "ISO/IEC 27001:2022",
+        "evidence": [
+          {
+            "source": "document_review",
+            "raw_text": "Employee competence is checked during recruitment. There is no formal confirmation check after employment. The organization recognizes that it needs to identify roles and required competences. The notes do not establish that employees are incompetent or specify what competence records are retained."
+          }
+        ],
+        "top_k": 3
+      }
+    },
+    {
+      "case_id": "GAP-008",
+      "source_page": 8,
+      "request": {
+        "org_name": "Sample Organisation",
+        "audit_date": "2026-09-10",
+        "standard": "ISO/IEC 27001:2022",
+        "evidence": [
+          {
+            "source": "document_review",
+            "raw_text": "There is no formal information security awareness training programme. Examples of staff updates sent by email were provided. The available notes do not record whether staff understand the security policy, their responsibilities or the consequences of not meeting requirements."
+          }
+        ],
+        "top_k": 3
+      }
+    },
+    {
+      "case_id": "GAP-009",
+      "source_page": 8,
+      "request": {
+        "org_name": "Sample Organisation",
+        "audit_date": "2026-09-10",
+        "standard": "ISO/IEC 27001:2022",
+        "evidence": [
+          {
+            "source": "document_review",
+            "raw_text": "Some ISMS documents are in place but take time to find. There are plans to bring the documents into one location and schedule reviews. The notes do not identify a required document that was unavailable when needed."
+          }
+        ],
+        "top_k": 3
+      }
+    },
+    {
+      "case_id": "GAP-010",
+      "source_page": 9,
+      "request": {
+        "org_name": "Sample Organisation",
+        "audit_date": "2026-09-10",
+        "standard": "ISO/IEC 27001:2022",
+        "evidence": [
+          {
+            "source": "document_review",
+            "raw_text": "The organization has experience with ISO 9001 internal audits but needs more experience for ISO 27001. The review identifies a need to plan ISMS audits, prepare an audit schedule and train additional internal auditors."
+          }
+        ],
+        "top_k": 3
+      }
+    }
+  ]
+}
