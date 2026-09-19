@@ -38,6 +38,7 @@ PRD pass threshold: classification macro F1 ≥ 0.75 and zero unsupported Major 
 Result: **Passed**.
 
 This is a small, project-authored development set rather than a held-out benchmark. Automated Judge results do not replace qualified external review.
+The dataset and Gold reports changed between Iteration 2 and Iteration 3. These scores describe each release on its respective development dataset and are not a controlled comparison of model or pipeline improvement.
 
 ## Guardrails
 
