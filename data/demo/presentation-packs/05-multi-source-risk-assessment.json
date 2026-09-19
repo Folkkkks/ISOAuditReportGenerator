@@ -1,0 +1,21 @@
+{
+  "org_name": "Acme Corp (synthetic multi-source demo)",
+  "audit_date": "2026-09-18",
+  "standard": "ISO/IEC 27001:2022",
+  "report_language": "en",
+  "evidence": [
+    {
+      "source": "interview",
+      "raw_text": "Auditee: Information Security Manager. Position: ISMS Manager. Interview Notes: The organization has not defined consistent information-security risk assessment criteria. Each department currently uses its own informal method."
+    },
+    {
+      "source": "checklist",
+      "raw_text": "Checklist Item: Repeatable information-security risk assessment process established? Result: NON-COMPLIANT. Notes: No documented likelihood scale, impact scale, risk acceptance criteria, or common assessment method was available."
+    },
+    {
+      "source": "document_review",
+      "raw_text": "Document Name: Information Security Risk Register. Reference: RISK-REG-02. Review Notes: The register contained asset names and free-text concerns but did not record risk owners, likelihood, consequences, risk levels, or evaluation against acceptance criteria. The same gap affected all sampled business functions."
+    }
+  ],
+  "top_k": 3
+}

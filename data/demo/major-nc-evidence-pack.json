@@ -1,0 +1,13 @@
+{
+  "org_name": "Acme Corp (synthetic major NC demo)",
+  "audit_date": "2026-09-16",
+  "standard": "ISO/IEC 27001:2022",
+  "report_language": "en",
+  "evidence": [
+    {
+      "source": "document_review",
+      "raw_text": "No information security objectives had been established for any business function. No objective owners, measures, target dates, or monitoring records were available across the organization. The same absence was recorded in the previous internal audit and no corrective action had been implemented. This evidence indicates a management-system-wide failure of the ISO 27001 clause 6.2 process."
+    }
+  ],
+  "top_k": 3
+}

@@ -1,12 +1,12 @@
 from datetime import date
 from typing import Literal
 
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 
 class AuditObservation(BaseModel):
     obs_id: str
-    source: str
+    source: Literal["interview", "checklist", "document_review"]
     raw_text: str
     normalized_statement: str
 
@@ -17,6 +17,7 @@ class AuditFinding(BaseModel):
     classification: Literal["major_nc", "minor_nc", "observation", "ofi"]
     finding_statement: str
     objective_evidence: list[str]
+    objective_evidence_th: list[str] = Field(default_factory=list)
     requirement_text_id: str
     suggested_corrective_action: str | None
 

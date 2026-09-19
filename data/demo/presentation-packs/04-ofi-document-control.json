@@ -1,0 +1,13 @@
+{
+  "org_name": "Cedar Finance Lab (synthetic OFI demo)",
+  "audit_date": "2026-09-18",
+  "standard": "ISO/IEC 27001:2022",
+  "report_language": "en",
+  "evidence": [
+    {
+      "source": "document_review",
+      "raw_text": "Document Name: Document Control Procedure. Reference: DOC-CTRL-04. Review Notes: Required ISMS documents were approved, versioned, available at points of use, and protected from unintended changes. The organization could improve efficiency by adding automated reminders before scheduled document review dates. No missed review, obsolete document, or control failure was identified."
+    }
+  ],
+  "top_k": 3
+}

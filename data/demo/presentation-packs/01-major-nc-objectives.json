@@ -1,0 +1,13 @@
+{
+  "org_name": "Acme Corp (synthetic major NC demo)",
+  "audit_date": "2026-09-18",
+  "standard": "ISO/IEC 27001:2022",
+  "report_language": "en",
+  "evidence": [
+    {
+      "source": "document_review",
+      "raw_text": "Document Name: ISMS Objectives Register. Reference: OBJ-REG-01. Review Notes: No information security objectives had been established for any business function. No objective owners, measures, target dates, or monitoring records were available across the organization. The previous internal audit recorded the same absence and no corrective action had been implemented."
+    }
+  ],
+  "top_k": 3
+}

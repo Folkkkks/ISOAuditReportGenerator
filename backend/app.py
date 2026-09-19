@@ -1,6 +1,8 @@
-from fastapi import FastAPI
-from pydantic import BaseModel
-from uuid import uuid4
+import json
+from pathlib import Path
+
+from fastapi import FastAPI, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
 from backend.models.retrieval import RetrievalRequest, RetrievalResult
 from backend.services.retrieval import retrieve_documents
 from backend.agents.nc_classifier import classify_evidence
@@ -18,49 +20,46 @@ from backend.models.evidence_judgment import (
 )
 from backend.models.pipeline import PipelineResponse
 from backend.services.pipeline import run_report_pipeline
+from backend.services.provider_errors import call_ai_safely
+from backend.review_api import router as review_router
+from backend.services import report_store as store
+from pydantic import BaseModel, Field
 
-app = FastAPI(title="ISO Audit Report Generator API")
+app = FastAPI(title="ISO Audit Report Generator API", version="1.0.0")
+app.include_router(review_router)
 
-audits_db = {}
-
-
-class EvidenceItem(BaseModel):
-    source: str
-    raw_text: str
-
-
-class AuditIngestRequest(BaseModel):
-    org_name: str
-    standard: str = "ISO/IEC 27001:2022"
-    evidence: list[EvidenceItem]
-
-
-class AuditIngestResponse(BaseModel):
-    audit_id: str
-    org_name: str
-    standard: str
-    evidence: list[EvidenceItem]
-    status: str
-
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:5173", "http://127.0.0.1:5173"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 @app.get("/")
 def root():
     return {"message": "ISO Audit Report Generator API is running"}
 
 
-@app.post("/audits/ingest", response_model=AuditIngestResponse)
-def ingest_audit(request: AuditIngestRequest):
-    audit_id = str(uuid4())
+class EvaluationApiRequest(BaseModel):
+    dry_run: bool = True
+    limit: int | None = Field(default=None, ge=1)
 
-    audits_db[audit_id] = {
-        "audit_id": audit_id,
-        "org_name": request.org_name,
-        "standard": request.standard,
-        "evidence": [item.model_dump() for item in request.evidence],
-        "status": "ingested",
-    }
 
-    return audits_db[audit_id]
+@app.post("/evaluate")
+def evaluate(request: EvaluationApiRequest):
+    """Validate or run the development evaluation pack."""
+    from backend.evaluate import run_evaluation
+    try:
+        return run_evaluation(limit=request.limit, dry_run=request.dry_run)
+    except ValueError as error:
+        raise HTTPException(422, str(error)) from None
+
+
+@app.post("/audits/ingest")
+def ingest_audit(request: ReportComposeRequest):
+    """PRD-compatible ingest endpoint backed by the persistent review store."""
+    return store.create(request.model_dump(mode="json"))
 
 @app.post("/knowledge/search", response_model=list[RetrievalResult])
 def search_knowledge(request: RetrievalRequest):
@@ -77,15 +76,18 @@ def search_knowledge(request: RetrievalRequest):
 def classify_finding(
     request: ClassificationRequest,
 ):
-    return classify_evidence(
-        evidence=request.evidence,
-        top_k=request.top_k,
+    return call_ai_safely(
+        lambda: classify_evidence(
+            evidence=request.evidence,
+            top_k=request.top_k,
+            report_language=request.report_language,
+        )
     )
 
 
 @app.post("/reports/compose", response_model=AuditReport)
 def compose_audit_report(request: ReportComposeRequest):
-    return compose_report(request)
+    return call_ai_safely(lambda: compose_report(request))
 
 
 @app.post(
@@ -95,7 +97,25 @@ def compose_audit_report(request: ReportComposeRequest):
 def judge_audit_report(
     request: EvidenceJudgeRequest,
 ):
-    return judge_report(request)
+    return call_ai_safely(lambda: judge_report(request))
+
+
+@app.post(
+    "/demo/judge-block",
+    response_model=EvidenceJudgeResponse,
+)
+def run_judge_block_demo():
+    """Run the bundled unsupported-claim case without manual JSON entry."""
+    fixture = (
+        Path(__file__).resolve().parents[1]
+        / "data"
+        / "demo"
+        / "unsupported-judge-request.json"
+    )
+    request = EvidenceJudgeRequest.model_validate(
+        json.loads(fixture.read_text(encoding="utf-8"))
+    )
+    return call_ai_safely(lambda: judge_report(request))
 
 
 @app.post(
@@ -105,4 +125,4 @@ def judge_audit_report(
 def run_audit_report(
     request: ReportComposeRequest,
 ):
-    return run_report_pipeline(request)
+    return call_ai_safely(lambda: run_report_pipeline(request))

@@ -1,0 +1,13 @@
+{
+  "org_name": "Bluewave Systems (synthetic observation demo)",
+  "audit_date": "2026-09-18",
+  "standard": "ISO/IEC 27001:2022",
+  "report_language": "en",
+  "evidence": [
+    {
+      "source": "checklist",
+      "raw_text": "Checklist Item: Competence records available for personnel with information-security responsibilities? Result: PARTIALLY OBSERVED. Notes: Training certificates and role descriptions were available for the sampled employees. Effectiveness reviews were recorded for most samples, but one recently transferred employee had not yet reached the scheduled review date. No evidence showed that the employee was performing the role without the required competence."
+    }
+  ],
+  "top_k": 3
+}

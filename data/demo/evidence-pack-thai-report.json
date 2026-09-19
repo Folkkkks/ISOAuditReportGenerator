@@ -1,0 +1,12 @@
+{
+  "org_name": "Northstar Digital Services (synthetic demo)",
+  "audit_date": "2026-09-16",
+  "standard": "ISO/IEC 27001:2022",
+  "report_language": "th",
+  "evidence": [
+    {
+      "source": "document_review",
+      "raw_text": "The documented procedure requires privileged access reviews to be completed every quarter. Records for the first three quarters were available. The fourth-quarter review was completed two weeks after the required date, and its management approval record was not available during the audit."
+    }
+  ]
+}

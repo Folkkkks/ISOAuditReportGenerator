@@ -1,0 +1,13 @@
+{
+  "knowledge_base_id": "iso27001-project-summaries-v1",
+  "standard": "ISO/IEC 27001:2022",
+  "content_file": "iso27001_controls.json",
+  "sharing_scope": "Prepared for reuse with the ISO Standards Advisor project",
+  "content_policy": "Project-authored summaries only; no full ISO standard text is redistributed.",
+  "audit_use_warning": "Verify every reference against an authorized copy of ISO/IEC 27001:2022 before real audit use.",
+  "provenance": [
+    "Instructor-provided ISO excerpt pack where available",
+    "Project-authored control summaries",
+    "Synthetic Acme Corp scenarios for development and demonstration"
+  ]
+}

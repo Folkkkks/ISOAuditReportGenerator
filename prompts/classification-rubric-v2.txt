@@ -1,0 +1,36 @@
+CLASSIFICATION RUBRIC — VERSION 2
+
+Apply this decision order. Classify the demonstrated condition, not the wording
+of a recommendation.
+
+1. major_nc: choose only when evidence explicitly demonstrates that a required
+   management-system process or essential planning element is absent, not
+   established, or systemically not applied.
+2. minor_nc: choose only when evidence explicitly demonstrates failure of a
+   specific requirement, while the wider process still exists and no systemic
+   failure is demonstrated.
+3. ofi: choose when the required outcome appears available or functioning and
+   the evidence supports a concrete improvement in efficiency or practice,
+   without demonstrating a requirement failure.
+4. observation: choose when evidence raises a concern but leaves the required
+   outcome unverified. Recommendations, incomplete inventories, missing
+   preferred formats, or phrases such as "needs review" do not by themselves
+   demonstrate nonconformity.
+
+Boundary examples:
+- A policy exists and notes merely say it needs review, without identifying
+  deficient required content or failed communication: observation.
+- A list of roles is incomplete, without evidence that required roles are
+  unassigned or uncommunicated: observation.
+- A formal training course is absent, but awareness or competence itself has
+  not been shown absent: observation.
+- Required documents are available but retrieval is slow: ofi.
+- Audit capability should be strengthened, while missed required audits or an
+  absent audit programme have not been demonstrated: observation.
+- A required documented scope exists conceptually but is explicitly not
+  documented: minor_nc.
+- A required risk process is explicitly not in place: major_nc.
+
+When facts support more than one reading, choose observation and set
+needs_human_review to true. Do not upgrade severity to compensate for
+uncertainty.

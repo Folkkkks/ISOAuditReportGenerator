@@ -20,16 +20,28 @@ def write_json(path: Path, payload: dict) -> None:
 
 def save_results(directory: Path, result: dict) -> None:
     result['metrics'] = calculate_metrics(result['cases'])
-    write_json(directory / 'results.json', result)
     metrics = result['metrics']
+    result['thresholds'] = {
+        'classification_macro_f1_minimum': 0.75,
+        'released_automated_unsupported_major_maximum': 0,
+        'passed': (
+            metrics['prediction_coverage'] == 1.0
+            and metrics['classification_macro_f1'] >= 0.75
+            and metrics['automated_unsupported_major_count'] == 0
+        ),
+    }
+    write_json(directory / 'results.json', result)
     lines = [
-        '# Iteration 2 evaluation', '',
+        '# ISO Audit Report Generator evaluation', '',
         f"Run: {result['run_id']}; status: {result['status']}", '',
+        f"Model: `{result.get('model', 'unknown')}`", '',
+        f"Prompt manifest: `{result.get('prompt_manifest', {}).get('classification_rubric', {}).get('version', 'legacy')}` classification rubric", '',
         f"Gold review status: **{result['gold_review_status']}**", '',
+        f"PRD metric threshold passed: **{result['thresholds']['passed']}**", '',
         f"Selected {len(result['cases'])} of {result['dataset_size']} cases.", '',
         'Development evaluation; these cases are not a held-out benchmark.', '',
         'Classification and clause scores compare predictions against authored gold labels. '
-        'Draft gold labels require human review. Judge scores are automated proxies, '
+        'Development-reviewed labels still require qualified external sign-off. Judge scores are automated proxies, '
         'not independent confirmation of correctness or final PRD compliance.', '',
         '| Metric | Value |', '| --- | ---: |',
     ]
@@ -54,7 +66,7 @@ def save_results(directory: Path, result: dict) -> None:
         lines.append(f"| {row['case_id']} | {expected['classification']} / {expected['clause_ref']} | "
                      f"{prediction.get('classification', 'N/A')} / {prediction.get('clause_ref', 'N/A')} | {row['status']} |")
     lines += ['', 'Source provenance, annotation notes, hashes, timings and error types are in results.json. '
-              'Reference report summaries are templates; narrative quality and corrective actions are not scored.', '']
+              'Full Gold reports are separately authored references; narrative quality and corrective actions are not scored.', '']
     (directory / 'eval_report.md').write_text('\n'.join(lines), encoding='utf-8')
 
 
@@ -120,6 +132,60 @@ def git_state() -> dict:
     return {'commit': read('rev-parse', 'HEAD'), 'dirty': None if status is None else bool(status)}
 
 
+def run_evaluation(limit: int | None = None, dry_run: bool = True) -> dict:
+    """Run or validate the bundled development evaluation for the HTTP API."""
+    inputs = EVALUATION_DIR / 'inputs.json'
+    gold = EVALUATION_DIR / 'gold.json'
+    dataset = load_evaluation_dataset(inputs, gold)
+    if limit is not None and not 1 <= limit <= len(dataset.cases):
+        raise ValueError(f'limit must be between 1 and {len(dataset.cases)}')
+    cases = dataset.cases[:limit]
+    summary = {
+        'status': 'validated' if dry_run else 'running',
+        'dry_run': dry_run,
+        'dataset_size': len(dataset.cases),
+        'selected_cases': len(cases),
+        'gold_review_status': dataset.gold.review_status,
+    }
+    if dry_run:
+        return summary
+
+    # Lazy imports keep data validation independent of the AI SDK.
+    from backend.services.pipeline import execute_report_pipeline
+    from backend.agents.nc_classifier import DEFAULT_MODEL
+    from backend.services.prompt_registry import manifest
+
+    run_id = datetime.now(timezone.utc).strftime('%Y%m%dT%H%M%SZ') + '-' + uuid4().hex[:8]
+    directory = PROJECT_ROOT / 'reports' / 'evaluation' / run_id
+    directory.mkdir(parents=True, exist_ok=False)
+    result = {
+        'run_id': run_id, 'status': 'running', 'model': DEFAULT_MODEL,
+        'prompt_manifest': manifest(),
+        'git': git_state(), 'dataset_id': dataset.gold.dataset_id,
+        'dataset_size': len(dataset.cases), 'gold_review_status': dataset.gold.review_status,
+        'annotation_note': dataset.gold.annotation_note, 'hashes': dataset.hashes,
+        'input_snapshot': json.loads(inputs.read_text(encoding='utf-8-sig')),
+        'gold_snapshot': dataset.gold.model_dump(mode='json'),
+        'cases': [{'case_id': case.case_id, 'status': 'pending',
+                   'expected': case.gold.model_dump(mode='json')} for case in cases],
+    }
+    write_json(directory / 'gold_reports.json', {
+        'review_status': dataset.gold.review_status,
+        'note': 'Separately authored full development Gold AuditReport objects; external sign-off remains pending.',
+        'cases': [{'case_id': case.case_id, 'report': build_gold_report(case).model_dump(mode='json')}
+                  for case in cases],
+    })
+    exit_code = evaluate_cases(cases, execute_report_pipeline, directory, result)
+    return {
+        **summary,
+        'status': result['status'],
+        'run_id': run_id,
+        'exit_code': exit_code,
+        'metrics': result['metrics'],
+        'report_path': str(directory / 'eval_report.md'),
+    }
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--dry-run', action='store_true', help='Validate data only; no AI calls or output files')
@@ -143,6 +209,7 @@ def main() -> int:
     # Lazy imports keep validation and metric tests independent of the AI SDK.
     from backend.services.pipeline import execute_report_pipeline
     from backend.agents.nc_classifier import DEFAULT_MODEL
+    from backend.services.prompt_registry import manifest
     if args.resume is not None:
         directory = args.resume.resolve()
         result = json.loads((directory / 'results.json').read_text(encoding='utf-8'))
@@ -168,6 +235,7 @@ def main() -> int:
         directory.mkdir(parents=True, exist_ok=False)
         result = {
             'run_id': run_id, 'status': 'running', 'model': DEFAULT_MODEL,
+            'prompt_manifest': manifest(),
             'git': git_state(), 'dataset_id': dataset.gold.dataset_id,
             'dataset_size': len(dataset.cases), 'gold_review_status': dataset.gold.review_status,
             'annotation_note': dataset.gold.annotation_note, 'hashes': dataset.hashes,
@@ -178,7 +246,7 @@ def main() -> int:
         }
         write_json(directory / 'gold_reports.json', {
             'review_status': dataset.gold.review_status,
-            'note': 'Schema projections of authored annotations; summaries are templates, not reviewed narrative gold.',
+            'note': 'Separately authored full development Gold AuditReport objects; external sign-off remains pending.',
             'cases': [{'case_id': case.case_id, 'report': build_gold_report(case).model_dump(mode='json')} for case in cases],
         })
     code = evaluate_cases(cases, execute_report_pipeline, directory, result)

@@ -1,0 +1,11 @@
+{
+  "org_name": "Acme Corp (synthetic demo)",
+  "audit_date": "2026-09-15",
+  "standard": "ISO/IEC 27001:2022",
+  "evidence": [
+    {
+      "source": "document_review",
+      "raw_text": "The documented procedure requires quarterly privileged access reviews. Three completed reviews were available. The latest quarterly review was overdue by two weeks and its approval record was not available at the audit. The audit did not examine other access-control processes."
+    }
+  ]
+}

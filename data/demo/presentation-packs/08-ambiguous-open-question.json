@@ -1,0 +1,13 @@
+{
+  "org_name": "Greenfield Clinic Lab (synthetic ambiguous evidence)",
+  "audit_date": "2026-09-18",
+  "standard": "ISO/IEC 27001:2022",
+  "report_language": "en",
+  "evidence": [
+    {
+      "source": "interview",
+      "raw_text": "Auditee: Department Coordinator. Position: Operations Coordinator. Interview Notes: The coordinator believed that staff received information-security awareness briefings, but could not confirm the frequency, attendance, content, or whether understanding was evaluated. Training records were not examined in this interview."
+    }
+  ],
+  "top_k": 3
+}

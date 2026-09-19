@@ -16,6 +16,7 @@ JudgmentVerdict = Literal[
 class EvidenceJudgeRequest(BaseModel):
     report: AuditReport
     source_evidence: list[ReportEvidenceItem] = Field(min_length=1)
+    report_language: Literal["en", "th"] = "en"
 
 
 class FindingJudgment(BaseModel):

@@ -1,0 +1,20 @@
+{
+  "org_name": "<organization>",
+  "audit_date": "<YYYY-MM-DD>",
+  "standard": "ISO/IEC 27001:2022",
+  "executive_summary": "<brief evidence-grounded summary>",
+  "findings": [
+    {
+      "finding_id": "F-001",
+      "clause_ref": "<mapped clause>",
+      "classification": "<major_nc | minor_nc | observation | ofi>",
+      "finding_statement": "<formal statement produced by Report Composer>",
+      "objective_evidence": ["<exact source quotation>"],
+      "objective_evidence_th": ["<Thai reader-aid translation>"],
+      "requirement_text_id": "<knowledge-base document ID>",
+      "suggested_corrective_action": "<non-binding suggestion>"
+    }
+  ],
+  "open_questions": [],
+  "disclaimer": "Draft report for auditor review and sign-off only."
+}

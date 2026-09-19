@@ -1,0 +1,13 @@
+{
+  "org_name": "Northstar Digital Services (synthetic minor NC demo)",
+  "audit_date": "2026-09-18",
+  "standard": "ISO/IEC 27001:2022",
+  "report_language": "en",
+  "evidence": [
+    {
+      "source": "document_review",
+      "raw_text": "Document Name: Privileged Access Review Record. Reference: SEC-AC-07 Rev.3. Review Notes: The procedure requires quarterly privileged-access reviews. Records for the first three quarters were available. The fourth-quarter review was completed two weeks late, and its management approval record was not available during the audit. The audit scope was limited to privileged user accounts."
+    }
+  ],
+  "top_k": 3
+}

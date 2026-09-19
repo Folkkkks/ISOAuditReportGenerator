@@ -1,4 +1,6 @@
 __pycache__/
+reports/local/
+venv/
 .env
 .venv/
 *.pyc

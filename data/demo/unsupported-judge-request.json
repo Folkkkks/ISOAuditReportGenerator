@@ -1,0 +1,31 @@
+{
+  "report_language": "en",
+  "source_evidence": [
+    {
+      "source": "interview",
+      "raw_text": "One employee said that security training attendance records were not immediately available during the interview."
+    }
+  ],
+  "report": {
+    "org_name": "Acme Corp (synthetic judge-block demo)",
+    "audit_date": "2026-09-16",
+    "standard": "ISO/IEC 27001:2022",
+    "executive_summary": "Draft report for evidence-gating demonstration.",
+    "findings": [
+      {
+        "finding_id": "F-001",
+        "clause_ref": "7.3",
+        "classification": "major_nc",
+        "finding_statement": "No employee in the organization has received information security awareness training.",
+        "objective_evidence": [
+          "One employee said that security training attendance records were not immediately available during the interview."
+        ],
+        "objective_evidence_th": [],
+        "requirement_text_id": "ISO27001-7.3",
+        "suggested_corrective_action": "Review training records and determine whether further action is required."
+      }
+    ],
+    "open_questions": [],
+    "disclaimer": "Draft report for auditor review and sign-off only."
+  }
+}

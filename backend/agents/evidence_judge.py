@@ -1,5 +1,7 @@
 import json
 import os
+from backend.services.prompt_registry import protect
+from backend.services.request_pacing import wait_for_slot
 
 from dotenv import load_dotenv
 
@@ -13,7 +15,7 @@ from backend.services.retrieval import retrieve_documents
 
 load_dotenv()
 
-DEFAULT_MODEL = os.getenv("GEMINI_MODEL", "gemini-3.6-flash")
+DEFAULT_MODEL = os.getenv("GEMINI_MODEL", "gemini-3.5-flash-lite")
 
 
 def _build_deterministic_checks(
@@ -68,6 +70,12 @@ def build_evidence_judge_prompt(
         item.model_dump(mode="json")
         for item in request.source_evidence
     ]
+    output_language = (
+        "Thai. Keep finding IDs, verdict enum values, clause references, and "
+        "quoted unsupported claims in their original form."
+        if request.report_language == "th"
+        else "English."
+    )
 
     return f"""
 You are the Evidence Judge for an ISO/IEC 27001:2022
@@ -92,6 +100,10 @@ Rules:
 8. Set report_grounded to true only when every finding is supported,
    evidence_supported is true, and reference_valid is true.
 9. Do not invent evidence, requirements, or audit conclusions.
+10. objective_evidence is the authoritative source quotation.
+    objective_evidence_th is a reader aid only; do not treat it as an
+    additional source or use it for the deterministic evidence check.
+11. Write rationale and summary in {output_language}
 
 AUDIT REPORT:
 {json.dumps(report_data, indent=2)}
@@ -175,12 +187,13 @@ def judge_report(
     deterministic_checks = _build_deterministic_checks(request)
 
     client = create_gemini_client(api_key)
+    wait_for_slot()
     interaction = client.interactions.create(
         model=model_name,
-        input=build_evidence_judge_prompt(
+        input=protect(build_evidence_judge_prompt(
             request,
             deterministic_checks,
-        ),
+        )),
         response_format={
             "type": "text",
             "mime_type": "application/json",

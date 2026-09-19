@@ -1,0 +1,35 @@
+{
+  "report": {
+    "org_name": "Acme Corp (synthetic judge-block demo)",
+    "audit_date": "2026-09-18",
+    "standard": "ISO/IEC 27001:2022",
+    "executive_summary": "A draft finding was generated from one interview statement.",
+    "findings": [
+      {
+        "finding_id": "F-001",
+        "clause_ref": "6.2",
+        "classification": "major_nc",
+        "finding_statement": "The organization has never established any information-security objectives and every department deliberately ignored all management-system requirements for five years.",
+        "objective_evidence": [
+          "The interviewee could not provide the current information-security objectives during the meeting. No document review was performed."
+        ],
+        "objective_evidence_th": [
+          "ผู้ให้สัมภาษณ์ไม่สามารถแสดงวัตถุประสงค์ด้านความมั่นคงปลอดภัยสารสนเทศฉบับปัจจุบันระหว่างการประชุมได้ โดยไม่ได้มีการตรวจเอกสาร"
+        ],
+        "requirement_text_id": "ISO27001-6.2",
+        "suggested_corrective_action": "Confirm whether documented objectives exist and review the relevant records before determining the classification."
+      }
+    ],
+    "open_questions": [
+      "Do approved information-security objectives exist outside the interview evidence?"
+    ],
+    "disclaimer": "Draft report for auditor review and sign-off only."
+  },
+  "source_evidence": [
+    {
+      "source": "interview",
+      "raw_text": "The interviewee could not provide the current information-security objectives during the meeting. No document review was performed."
+    }
+  ],
+  "report_language": "en"
+}

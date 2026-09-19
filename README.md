@@ -1,6 +1,23 @@
 # ISO Audit Report Generator
 
-An AI-enabled system that transforms raw audit evidence into structured draft audit reports for ISO/IEC 27001:2022. Every generated report requires auditor review and sign-off.
+An AI-assisted system that transforms ISO/IEC 27001:2022 audit evidence into
+structured draft reports with classified, clause-mapped, and evidence-grounded
+findings.
+
+> **v1.0.0 — Iteration 3 Demo Day**  
+> Start with [START_HERE_TH.md](START_HERE_TH.md) for Thai installation,
+> testing, and demonstration instructions.
+
+Every generated report is a draft that requires auditor review and sign-off.
+The system does not issue certificates or publish reports automatically.
+
+## Project status
+
+| Iteration | Release | Result |
+| --- | --- | --- |
+| Iteration 1 — Walking Skeleton | `v0.1.0` | Released |
+| Iteration 2 — AI Core | `v0.2.0` | Completed and evaluated |
+| Iteration 3 — Demo Day Product | `v1.0.0` | Completed and validated |
 
 ## Members
 
@@ -8,132 +25,242 @@ An AI-enabled system that transforms raw audit evidence into structured draft au
 - Teeraphat Yodyotee
 - Sasikan Saenchanta
 
-## Project status
-
-- **Iteration 1 — Walking Skeleton:** released as `v0.1.0`
-- **Iteration 2 — AI Core:** completed and evaluated
-- **Iteration 3 — Demo Day Product:** planned
-
 ## Problem and solution
 
-Lead auditors spend significant time converting raw notes, checklists, interview records, and document-review results into formal findings reports. This project accepts a text evidence bundle and produces a Pydantic-validated draft report containing:
+Lead auditors spend significant time converting raw notes, checklists,
+interview records, and document-review results into formal findings reports.
+This project accepts an audit evidence bundle and generates a
+Pydantic-validated draft containing:
 
 - an executive summary;
 - findings classified as `major_nc`, `minor_nc`, `observation`, or `ofi`;
-- ISO clause and knowledge-document references;
-- objective evidence;
+- ISO clause and requirement-document references;
+- preserved objective evidence;
 - suggested corrective actions; and
-- questions requiring human review.
+- open questions requiring human review.
 
-The system never issues a certification decision or publishes a report automatically.
+### Primary users
 
-## Users and primary use cases
+- **Lead auditor:** uploads evidence and receives structured draft sections.
+- **Audit manager:** reviews classifications and report content before client
+  delivery.
 
-- **Lead auditor:** submits audit evidence and receives structured draft report sections.
-- **Audit manager:** reviews classifications and report content before client delivery.
+### Scope
 
-The primary use case is a lead auditor submitting an evidence bundle and receiving a structured draft report for human review and sign-off.
-
-## Scope
-
-### In scope
+**In scope**
 
 - ISO/IEC 27001:2022 evidence and requirement references
-- Text evidence intake for report generation
-- Finding classification and clause mapping
-- Objective-evidence grounding
-- Corrective-action suggestions
-- Executive-summary and report generation
-- Human review and auditor sign-off
+- Text evidence from interviews, checklists, and document reviews
+- Evidence normalization, finding classification, and clause mapping
+- Executive summary, finding statement, and corrective-action generation
+- Evidence Judge gating and human review
+- JSON and selectable-text PDF import
+- English and Thai report output
+- Markdown export and browser Print / Save as PDF
 
-### Out of scope
+**Out of scope**
 
-- Issuing official audit certificates or compliance verdicts
+- Issuing official certificates or final compliance verdicts
 - Audit scheduling and logistics
 - On-site photo or video analysis
+- OCR for scanned PDFs
 - Automatic publication to clients
 
-## Current architecture
+## v1.0.0 release highlights
+
+### Review workspace and UI
+
+- Operations dashboard showing Major/Minor NC totals, review workload, finding
+  distribution, and recent audits
+- New Audit workflow with JSON and selectable-text PDF import
+- Dedicated audit library, reports, and evaluation/control views
+- Persistent English/Thai interface selector
+- English or Thai generated report narrative
+- Original objective evidence plus an optional Thai reader-aid translation
+- Auditor edits with reviewer, reason, timestamp, revision checks, and
+  before/after history
+- Explicit auditor-review acknowledgement
+
+### AI pipeline and controls
+
+- Five explicit stages: Evidence Normalizer, NC Classifier, Clause Mapper,
+  Report Composer, and Evidence Judge
+- Lexical retrieval over project-authored ISO requirement summaries
+- Pydantic validation for requests, AI responses, reports, and Gold data
+- Evidence Judge gate that hides unsupported drafts from the public pipeline
+  response
+- One-click Judge Block Demo for an intentionally unsupported claim
+- Versioned safety policy and classification rubric
+- Optional basic contact masking and safe text rendering
+
+### Evaluation and release evidence
+
+- 10 synthetic Acme evaluation cases covering interview, checklist, and document-review evidence, with one evidence item and one expected finding per case
+- 10 separately authored full Gold reports
+- Final 10-case evaluation with no missing predictions or errors
+- 38/38 backend unit/API tests and 12/12 frontend logic/PDF tests passed
+- Stable evaluation, validation, and hallucination-mitigation reports
+
+Useful release documents:
+
+- [Final evaluation](reports/v1.0/final_eval_report.md)
+- [Judge and hallucination-mitigation log](reports/v1.0/judge_hallucination_log.md)
+- [Validation report](reports/v1.0/validation_report.md)
+- [Code-quality notes](docs/CODE_QUALITY.md)
+- [PRD compliance matrix](docs/PRD_COMPLIANCE_MATRIX.md)
+- [Gold review checklist](docs/INSTRUCTOR_GOLD_REVIEW.md)
+- [Demo script](docs/DEMO_SCRIPT.md)
+- [Release checklist](docs/RELEASE_CHECKLIST.md)
+- [Changelog](CHANGELOG.md)
+
+## Architecture
 
 ```mermaid
 flowchart TD
-    A[Audit evidence] --> B[FastAPI / pipeline]
-    B --> C[Lexical KB retrieval]
-    C --> D[Retrieval-based classifier router]
-    D --> E[Gemini NC classifier]
-    E --> F[Gemini report composer]
-    F --> G[Evidence Judge]
-    G --> H[AuditReport validation]
-    H --> I[Draft for auditor review]
+    A[Audit evidence] --> B[Evidence Normalizer]
+    B --> C[NC Classifier]
+    C --> D[Clause Mapper]
+    D --> E[Report Composer]
+    E --> F[Evidence Judge]
+    F --> G[Draft for auditor review]
 ```
 
-The classifier router chooses a management-system, Annex A, or mixed specialist instruction path from retrieved ISO references. The Evidence Judge combines deterministic evidence/reference checks with a structured Gemini judgment. A report that fails the Judge is blocked from the public pipeline response and marked `needs_revision`.
+The normalizer creates traceable `AuditObservation` objects while preserving
+the source text. Retrieval supplies relevant ISO candidates. The classifier
+determines severity, the Clause Mapper selects a grounded clause/document pair,
+and the Report Composer creates the formal finding. The Evidence Judge combines
+deterministic checks with a structured Gemini judgment. Unsupported reports are
+marked `needs_revision` and withheld from the public pipeline response.
 
-## Components
+| Component | Responsibility |
+| --- | --- |
+| Evidence Normalizer | Structure raw evidence without replacing its source text |
+| Retrieval | Rank relevant project-authored ISO summaries |
+| NC Classifier | Classify Major NC, Minor NC, Observation, or OFI |
+| Clause Mapper | Select an allowed clause and requirement-document pair |
+| Report Composer | Generate the executive summary and formal findings |
+| Evidence Judge | Check evidence support and reference validity |
+| Review API | Store, edit, review, and retrieve audit drafts and history |
+| Evaluation runner | Compare predictions with the authored Gold set |
 
-| Component | Responsibility | Status |
-| --- | --- | --- |
-| FastAPI | Validate requests and expose system endpoints | Implemented |
-| ISO knowledge base | Store project-authored ISO 27001 summaries and reference IDs | Implemented |
-| Retrieval pipeline | Rank relevant knowledge documents using lexical retrieval | Implemented |
-| Classifier router | Select a specialist instruction path from retrieved references | Implemented |
-| NC Classifier | Classify evidence and return grounded structured output | Implemented |
-| Report Composer | Generate a Pydantic-validated `AuditReport` | Implemented |
-| Evidence Judge | Check evidence support and reference validity | Implemented |
-| Evaluation runner | Compare pipeline outputs with authored Gold labels | Implemented |
-| Evidence Normalizer | Create explicit `AuditObservation` objects | Planned |
-| Dedicated Clause Mapper | Separate clause mapping from classification | Planned |
-| Report review UI and export | Human review and PDF/Markdown delivery | Planned for Iteration 3 |
+## Prompt versioning and security guardrails
 
-## Progress
+- `prompts/safety-v1.txt` is prepended to AI prompts through the prompt
+  registry.
+- The final classifier uses classification rubric `v2`.
+- Prompt-builder hashes identify the exact prompt implementation used in an
+  evaluation run.
+- Evidence is treated as untrusted input; embedded instructions are explicitly
+  rejected by the prompt policy.
+- API keys remain in local environment variables and are never committed.
+- Provider failures are converted into safe HTTP responses without exposing
+  provider details.
+- All reports retain a draft disclaimer and require human review.
+- Auditor edits create an append-only before/after history.
 
-- [x] Week 2: Audit report schemas
-- [x] Week 3: Evidence ingest API
-- [x] Week 4: ISO 27001 knowledge base setup
-- [x] Week 5: Retrieval pipeline
-- [x] Week 6: NC Classifier and retrieval-based router
-- [x] Week 7: Report Composer and end-to-end pipeline
-- [x] Week 8: Evidence Judge and Gold-set evaluation
-- [ ] Weeks 9–12: UI, report review, security guardrails, prompt versioning, and export
+The bundled Judge Block Demo deliberately submits a report whose claim is
+broader than its evidence. A correct result is `Report Grounded: No`,
+`Overall Result: Unsupported`, and `Human Review Required: Yes`.
+
+## Gold-set evaluation: Iteration 2 vs Iteration 3
+
+Both releases completed all 10 authored development cases. The final Iteration
+3 run used Gemini 3.5 Flash Lite, classification rubric v2, PRD-aligned Acme
+evidence packs, and separately authored full Gold reports.
+
+| Metric | Iteration 2 | Iteration 3 final | Change |
+| --- | ---: | ---: | ---: |
+| Evaluated cases | 10/10 | 10/10 | — |
+| Prediction coverage | 100% | 100% | Unchanged |
+| Classification accuracy | 80% | 100% | +20 percentage points |
+| Classification macro F1 | 81.25% | 100% | +18.75 percentage points |
+| Exact clause + requirement ID accuracy | 100% | 100% | Unchanged |
+| Automated grounding score | 100% | 100% | Unchanged |
+| Automated unsupported finding rate | 0% | 0% | Unchanged |
+| Released unsupported Major NC count | 0 | 0 | Unchanged |
+
+The PRD pass threshold requires:
+
+- classification macro F1 of at least **75%**; and
+- **zero** unsupported Major NCs on the gold set.
+
+The final Iteration 3 run passed both requirements. Accuracy increased from 80%
+to 100%, while macro F1 increased from 81.25% to 100%.
+
+These are development results rather than a held-out benchmark. Iteration 3
+also revised the dataset and Gold reports into the stricter PRD-aligned Acme
+format and advanced their status from `draft` to `development_reviewed`.
+Because the dataset and Gold reports changed between iterations, these
+scores describe each release on its respective development dataset.
+They are not a controlled comparison and do not establish how much
+the model or pipeline alone improved.
+
+See the [Iteration 2 report](reports/iteration2/eval_report.md), the
+[intermediate Iteration 3 report](reports/iteration3/eval_report.md), and the
+[final Iteration 3 report](reports/v1.0/final_eval_report.md).
+
+## Model choice and result interpretation
+
+The final build uses `gemini-3.5-flash-lite` for structured classification,
+report composition, and evidence judgment. It was selected as the release
+configuration used for the completed v1.0.0 evaluation. The comparison above
+is a system-level evaluation: prompt rubric, agent responsibilities, dataset,
+Gold reports, and validation controls changed alongside the model
+configuration. It is not an isolated model benchmark.
+
+Judge scores are automated proxies for grounding and do not constitute an ISO
+certification decision or independent auditor confirmation.
+
+## Evaluation data and knowledge base
+
+The project includes:
+
+- `data/evaluation/inputs.json`: 10 PRD-aligned Acme evidence cases;
+- `data/evaluation/gold.json`: authored reference classifications and
+  clause/document pairs;
+- separately authored full Gold `AuditReport` references;
+- `data/knowledge_base/iso27001_controls.json`: project-authored ISO requirement
+  summaries and reference IDs; and
+- Pydantic checks for input/Gold alignment and knowledge-base references.
+
+The repository does not redistribute the complete ISO standard. Gold reports
+have `review_status: development_reviewed`; they are not presented as
+instructor-verified labels.
 
 ## API endpoints
 
 | Method | Endpoint | Behavior |
 | --- | --- | --- |
 | `GET` | `/` | Return API status |
-| `POST` | `/audits/ingest` | Validate and store an evidence bundle in memory |
-| `POST` | `/knowledge/search` | Return ranked ISO knowledge documents |
-| `POST` | `/findings/classify` | Retrieve context and classify one evidence item |
+| `POST` | `/audits/ingest` | Validate an evidence bundle |
+| `POST` | `/knowledge/search` | Retrieve ranked ISO references |
+| `POST` | `/findings/classify` | Classify one evidence item |
 | `POST` | `/reports/compose` | Compose a structured draft report |
-| `POST` | `/reports/judge` | Judge report findings against evidence and KB references |
-| `POST` | `/reports/run` | Run composition and Judge gating end to end |
+| `POST` | `/reports/judge` | Judge findings against evidence and references |
+| `POST` | `/reports/run` | Run the complete gated pipeline |
+| `POST` | `/demo/judge-block` | Run the unsupported-claim guardrail demo |
+| `POST` | `/audits` | Save a validated evidence bundle locally |
+| `GET` | `/audits` | List saved audit drafts |
+| `POST` | `/audits/{id}/generate` | Generate and store a gated report |
+| `GET` | `/audits/{id}/report` | Retrieve a saved audit and report |
+| `GET` | `/audits/{id}/history` | Retrieve append-only change history |
+| `PATCH` | `/audits/{id}/findings/{fid}` | Save an auditor edit |
+| `POST` | `/audits/{id}/review` | Record auditor review acknowledgement |
+| `POST` | `/evaluate` | Validate or run the Gold-set evaluation |
 
-Interactive API documentation is available at `http://127.0.0.1:8000/docs` while the server is running.
+Interactive API documentation is available at
+`http://127.0.0.1:8000/docs` while FastAPI is running.
 
-## Pydantic schemas
+## Example input and output
 
-The main report and pipeline models include:
-
-- `AuditObservation`
-- `AuditFinding`
-- `AuditReport`
-- `AuditIngestRequest` and `AuditIngestResponse`
-- `ClassificationRequest` and `ClassificationResult`
-- `ReportComposeRequest`
-- `EvidenceJudgeRequest` and `EvidenceJudgeResponse`
-- `PipelineResponse`
-- `GoldFinding` and `GoldDataset`
-
-Structured Gemini responses are validated before they are returned or scored.
-
-## Sample ingest request
-
-Submit the following body to `POST /audits/ingest`:
+Example request for `POST /audits/ingest`:
 
 ```json
 {
   "org_name": "Acme Corp",
+  "audit_date": "2026-09-16",
   "standard": "ISO/IEC 27001:2022",
+  "report_language": "en",
   "evidence": [
     {
       "source": "interview",
@@ -141,264 +268,209 @@ Submit the following body to `POST /audits/ingest`:
     },
     {
       "source": "checklist",
-      "raw_text": "Privileged user access review was not performed in the last 12 months."
+      "raw_text": "Privileged access reviews were not completed on schedule."
     }
-  ]
+  ],
+  "top_k": 3
 }
 ```
 
-The endpoint validates and stores the evidence in memory, returning an `AuditIngestResponse` containing the generated `audit_id`, submitted fields, and `status: ingested`.
-
-## Sample structured report
-
-The report pipeline returns the following shape. The content below is abbreviated example data; live content is generated and validated at runtime.
+Simplified generated finding:
 
 ```json
 {
-  "org_name": "Acme Corp",
-  "audit_date": "2026-09-10",
-  "standard": "ISO/IEC 27001:2022",
-  "executive_summary": "Draft summary for auditor review.",
-  "findings": [
-    {
-      "finding_id": "F-001",
-      "clause_ref": "A.5.18",
-      "classification": "minor_nc",
-      "finding_statement": "A periodic privileged-access review was not performed.",
-      "objective_evidence": [
-        "Privileged user access review was not performed in the last 12 months."
-      ],
-      "requirement_text_id": "ISO27001-A.5.18",
-      "suggested_corrective_action": "Define and document a periodic access-review process."
-    }
+  "finding_id": "F-001",
+  "clause_ref": "A.5.18",
+  "classification": "minor_nc",
+  "finding_statement": "Privileged access reviews were not completed according to the defined schedule.",
+  "objective_evidence": [
+    "No access review records were available during the audit."
   ],
-  "open_questions": [],
-  "disclaimer": "Draft report for auditor review and sign-off only."
+  "requirement_text_id": "ISO27001-A.5.18",
+  "suggested_corrective_action": "Define and document a periodic access-review process."
 }
 ```
 
-## Knowledge base and evaluation data
-
-The project uses:
-
-- project-authored summaries for selected ISO/IEC 27001:2022 clauses and Annex A controls;
-- an instructor-approved sample ISO 27001 gap-analysis report as the source for paraphrased development cases;
-- 10 synthetic, independently runnable evidence cases;
-- authored reference labels and clause/document pairs in `data/evaluation/gold.json`; and
-- Pydantic validation that checks input/Gold alignment and verifies every Gold reference exists in the KB.
-
-The repository does not redistribute the complete ISO standard. The Gold annotations currently have `review_status: draft`; they are development references requiring team or instructor review and are not presented as instructor-verified labels.
-
-### RAG/KB sources
-
-- `data/knowledge_base/iso27001_controls.json`: project-authored requirement summaries and reference IDs used for retrieval
-- Instructor-approved ISO 27001 gap-analysis sample report: source for the paraphrased development evidence cases
-- Authorized ISO/IEC 27001:2022 and ISO/IEC 27002:2022 excerpts/references: used to review requirement and control references during development
-
-## Iteration 2 evaluation
-
-A completed run evaluated all 10 cases with Gemini 3.6 Flash.
-
-| Metric | Result |
-| --- | ---: |
-| Pipeline coverage | 10/10 (100%) |
-| Classification accuracy | 8/10 (80%) |
-| Classification macro F1 | 81.25% |
-| Exact clause + requirement ID accuracy | 100% |
-| Automated grounding score | 100% |
-| Automated unsupported finding rate | 0% |
-| Automated unsupported major findings | 0 |
-
-`GAP-007` and `GAP-010` were predicted as `minor_nc` while the draft Gold labels are `observation`. These disagreements remain visible in the evaluation report rather than changing Gold labels to match model output.
-
-The scores are development results on authored cases, not a held-out benchmark. Judge metrics are automated checks and do not replace qualified auditor review. See the checked-in Iteration 2 `eval_report.md` for denominators and per-case results.
-
 ## Repository layout
-
-The local `.env`, virtual environment, Python caches, and timestamped evaluation
-runs are intentionally omitted from this repository view.
 
 ```text
 ISOAuditReportGenerator/
+├── .github/workflows/       # Continuous integration
 ├── backend/
-│   ├── agents/
-│   │   ├── __init__.py
-│   │   ├── classifier_router.py
-│   │   ├── evidence_judge.py
-│   │   ├── nc_classifier.py
-│   │   └── report_composer.py
-│   ├── models/
-│   │   ├── classification.py
-│   │   ├── evaluation.py
-│   │   ├── evidence_judgment.py
-│   │   ├── knowledge_base.py
-│   │   ├── pipeline.py
-│   │   ├── report_composition.py
-│   │   ├── retrieval.py
-│   │   └── schemas.py
-│   ├── services/
-│   │   ├── __init__.py
-│   │   ├── evaluation_data.py
-│   │   ├── evaluation_metrics.py
-│   │   ├── gemini_client.py
-│   │   ├── knowledge_base.py
-│   │   ├── pipeline.py
-│   │   └── retrieval.py
-│   ├── app.py
-│   ├── evaluate.py
-│   ├── setup_iteration2_kb.py
-│   ├── test_classifier.py
-│   ├── test_classifier_router.py
-│   ├── test_evaluation_data.py
-│   ├── test_evaluation_metrics.py
-│   ├── test_evaluation_runner.py
-│   ├── test_evidence_judge.py
-│   ├── test_knowledge_base.py
-│   ├── test_report_composer.py
-│   ├── test_retrieval.py
-│   └── test_schemas.py
+│   ├── agents/              # Normalize, classify, map, compose, judge
+│   ├── models/              # Pydantic request/response schemas
+│   ├── services/            # Pipeline, retrieval, storage, prompts, metrics
+│   ├── app.py               # FastAPI application
+│   ├── review_api.py        # Saved-audit and human-review endpoints
+│   ├── evaluate.py          # Gold-set evaluation runner
+│   └── test_*.py            # Backend unit and API tests
 ├── data/
-│   ├── evaluation/
-│   │   ├── gold.json
-│   │   └── inputs.json
-│   ├── knowledge_base/
-│   │   └── iso27001_controls.json
-│   └── .gitkeep
-├── prompts/
-│   └── .gitkeep
+│   ├── demo/                # Synthetic demonstration fixtures
+│   ├── evaluation/          # Inputs, Gold labels, and Gold reports
+│   ├── knowledge_base/      # Project-authored ISO summaries
+│   └── report_templates/    # Report structure and tone references
+├── frontend/
+│   ├── src/                 # UI, API, review, export, PDF, and i18n modules
+│   ├── tests/               # Frontend tests
+│   ├── package.json
+│   └── vite.config.js
+├── prompts/                 # Versioned safety policy and rubric
 ├── reports/
-│   ├── iteration2/
-│   │   └── eval_report.md
-│   └── .gitkeep
-├── static/
-│   └── .gitkeep
-├── templates/
-│   └── .gitkeep
+│   ├── iteration2/          # Historical baseline
+│   ├── iteration3/          # Intermediate comparison and security log
+│   └── v1.0/                # Final metrics, validation, and Judge log
+├── docs/                    # Demo, release, quality, and PRD evidence
 ├── .env.example
 ├── .gitignore
+├── CHANGELOG.md
 ├── README.md
+├── START_HERE_TH.md
+├── requirements-dev.txt
 └── requirements.txt
 ```
 
-`reports/evaluation/<run-id>/` is generated locally for timestamped raw run
-artifacts. The stable `reports/iteration2/eval_report.md` is the report selected
-for the Iteration 2 release.
+Local `.env`, virtual environments, Python caches, `frontend/node_modules`,
+`frontend/dist`, `reports/local`, and timestamped `reports/evaluation` runs are
+excluded from Git.
 
 ## Setup
 
-Python 3.10 or newer is required.
+Python 3.10 or newer is required. Node.js 20.19 or newer (or Node.js 22.12 or
+newer) is required for the frontend.
 
 ```powershell
 py -m venv .venv
 .\.venv\Scripts\Activate.ps1
-python -m pip install -r requirements.txt
+python -m pip install -r requirements-dev.txt
+Copy-Item .env.example .env
 ```
 
-Create a local `.env` file from `.env.example` and configure the required values:
+Edit `.env` and add the local configuration:
 
 ```dotenv
 GOOGLE_API_KEY=your_api_key_here
-GEMINI_MODEL=gemini-3.6-flash
+GEMINI_MODEL=gemini-3.5-flash-lite
 GEMINI_TIMEOUT_SECONDS=120
 ```
 
 Never commit `.env` or API keys.
 
-## Validate and run
-
-Initialize/extend the development knowledge base, then run its validation and retrieval tests:
-
-```powershell
-python -m backend.setup_iteration2_kb
-python -m backend.test_knowledge_base
-python -m backend.test_retrieval
-```
-
-Run the offline validations and tests:
-
-```powershell
-python -m compileall -q backend
-python -m backend.test_schemas
-python -m backend.test_classifier_router
-python -m backend.test_evaluation_data
-python -m unittest backend.test_evaluation_metrics backend.test_evaluation_runner
-```
-
-The classifier, composer, Judge, and full evaluation commands make real Gemini
-API calls and therefore use the configured project's quota.
-
-Start FastAPI:
+### Start the backend
 
 ```powershell
 python -m uvicorn backend.app:app --reload
 ```
 
-## Run the evaluation
+### Start the frontend
 
-Validate the evaluation data without making API calls:
+Open a second terminal:
 
 ```powershell
+cd frontend
+npm ci
+npm run dev
+```
+
+Open `http://localhost:5173`. Vite forwards `/api` requests to FastAPI at
+`http://127.0.0.1:8000` during local development.
+
+## Validation and tests
+
+Run all backend checks:
+
+```powershell
+python -m compileall -q backend
+python -m unittest discover -s backend -p "test_*.py"
 python -m backend.evaluate --dry-run
 ```
 
-Run a smoke test on the first case:
+Run frontend checks:
 
 ```powershell
-python -m backend.evaluate --limit 1
+cd frontend
+npm ci
+npm test
+npm run check
+npm run build
 ```
 
-Run all cases:
+Commands that invoke Gemini require a configured API key and consume provider
+quota. Offline unit tests and `--dry-run` do not require live model calls.
+
+## Run the full evaluation
 
 ```powershell
 python -m backend.evaluate
 ```
 
-Each run writes `results.json`, `gold_reports.json`, and `eval_report.md` under `reports/evaluation/<run-id>/`. Interrupted, timed-out, and rate-limited cases remain visible; missing predictions stay in the metric denominator. A saved run can continue pending or failed cases:
+Run one case first when checking the live configuration:
+
+```powershell
+python -m backend.evaluate --limit 1
+```
+
+Resume an interrupted or rate-limited run:
 
 ```powershell
 python -m backend.evaluate --resume ".\reports\evaluation\<run-id>"
 ```
 
-Gemini Free Tier quotas may require the evaluation to continue later. The runner preserves completed cases and stops when it detects a rate-limit error.
+Each run writes `results.json`, `gold_reports.json`, and `eval_report.md` under
+`reports/evaluation/<run-id>/`. These timestamped raw runs remain local; stable
+release reports are stored under `reports/iteration2`, `reports/iteration3`, and
+`reports/v1.0`.
 
-## Security and human review
+## Security and human-review boundary
 
-- Treat submitted evidence as untrusted input.
-- Keep API keys in local environment variables.
-- Do not redistribute full licensed ISO documents.
-- Do not present generated content as an official certification verdict.
-- Do not automatically publish generated reports to clients.
-- Require a qualified auditor to review and sign off every report.
+- Use synthetic or de-identified evidence in this classroom build.
+- Treat all submitted evidence as untrusted input.
+- Keep API keys in `.env` and never commit them.
+- Do not redistribute complete licensed ISO standard text.
+- Never represent a generated report as a certification decision.
+- Never automatically publish a generated report to a client.
+- Require a qualified auditor to review every report before use.
 
 ## Known limitations
 
-- Gold labels remain draft pending expert review.
-- Retrieval is a lexical baseline rather than vector/embedding retrieval.
-- The ingest store is in memory and resets with the API process.
-- Evidence normalization and clause mapping are not yet separate agents.
-- The current evaluation set is small and development-authored.
-- The UI, override audit trail, prompt registry, security test pack, and report export are planned for Iteration 3.
+- The 10-case evaluation set is small, project-authored, and not held out.
+- Gold reports remain `development_reviewed` until an instructor or qualified
+  auditor signs them off.
+- Retrieval is a lexical baseline rather than embedding/vector retrieval.
+- Normalization structures and preserves evidence; it does not independently
+  reinterpret the source.
+- Clause mapping is a deterministic retrieved-context mapper/guard rather than
+  another generative model call.
+- Local SQLite evidence and history are plaintext; this classroom build has no
+  authentication or multi-user authorization.
+- Reviewer names are self-declared.
+- Contact masking is best-effort and does not detect every form of PII.
+- PDF import accepts selectable text only, up to 5 MB, 25 pages, and 9,500
+  extracted characters. Scanned documents require OCR and are rejected.
+- Thai report mode localizes generated narrative. ISO references, enum values,
+  and original objective evidence remain unchanged for traceability.
+- No finite injection-test set proves resistance to every adversarial input.
+- Browser Print / Save as PDF requires manual pagination review.
 
-## Iteration history and roadmap
+## Release history
 
-### Iteration 1 — `v0.1.0`
+### `v0.1.0` — Iteration 1
 
-The walking skeleton established the Pydantic schemas, evidence-ingest API, sample input/output, repository structure, architecture diagram, and FastAPI documentation. Its demo flow validated a mock `AuditReport`, started FastAPI, submitted evidence through Swagger UI, and confirmed the structured response.
+Walking skeleton with schemas, evidence ingest, sample input/output, FastAPI
+documentation, repository structure, and architecture design.
 
-### Iteration 2 — `v0.2.0`
+### `v0.2.0` — Iteration 2
 
-The AI core adds the knowledge base, lexical retrieval, classifier router, real structured Gemini calls, Report Composer, Evidence Judge, end-to-end report gating, development Gold data, evaluation runner, and metrics report.
+AI core with knowledge base, retrieval, classifier router, structured Gemini
+calls, Report Composer, Evidence Judge, pipeline gating, Gold data, and metrics.
 
-### Iteration 3 — `v1.0.0`
+### `v1.0.0` — Iteration 3
 
-Planned work includes the report-review UI, auditor overrides and audit trail, security tests and guardrails, prompt versioning, PDF/Markdown export, full reviewed Gold evaluation, demo script, and demo video.
-
-## Releases
-
-- `v0.1.0`: Iteration 1 walking skeleton
-- `v0.2.0`: Iteration 2 AI core
-- `v1.0.0`: Demo Day product (planned)
+Demo-ready review UI, audit history, prompt versioning, security controls,
+PDF/Markdown delivery, PRD-aligned dataset, full Gold reports, evaluation
+comparison, validation evidence, and release documentation.
 
 ## Disclaimer
 
-This educational project produces draft audit content only. All findings, classifications, corrective-action suggestions, and reports require review and sign-off by a qualified auditor before use.
+This educational project produces draft audit content only. All findings,
+classifications, corrective-action suggestions, and reports require review and
+sign-off by a qualified auditor before use.

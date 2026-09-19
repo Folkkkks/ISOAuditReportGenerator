@@ -5,7 +5,7 @@ from pathlib import Path
 
 from backend.models.evaluation import GoldDataset, GoldFinding
 from backend.models.report_composition import ReportComposeRequest
-from backend.models.schemas import AuditFinding, AuditReport
+from backend.models.schemas import AuditReport
 from backend.services.knowledge_base import (
     DEFAULT_KNOWLEDGE_BASE_PATH,
     load_knowledge_base,
@@ -75,6 +75,16 @@ def load_evaluation_dataset(
             raise ValueError(f"{item.case_id}: reference pair is missing from the KB")
         if item.classification not in gold.rubric:
             raise ValueError(f"{item.case_id}: classification has no rubric")
+        request = requests[item.case_id]
+        report = item.report
+        if (
+            report.org_name != request.org_name
+            or report.audit_date != request.audit_date
+            or report.standard != request.standard
+        ):
+            raise ValueError(f"{item.case_id}: Gold report metadata disagrees with input")
+        if report.findings[0].objective_evidence != [request.evidence[0].raw_text]:
+            raise ValueError(f"{item.case_id}: Gold objective evidence must copy raw input")
 
     return EvaluationDataset(
         gold=gold,
@@ -88,29 +98,5 @@ def load_evaluation_dataset(
 
 
 def build_gold_report(case: EvaluationCase) -> AuditReport:
-    """Materialize the authored finding annotation as a complete draft schema.
-
-    The summary and review question are templates, not extra expert labels.
-    Corrective action stays None because no reviewed action label was supplied.
-    """
-    finding = case.gold
-    return AuditReport(
-        org_name=case.request.org_name,
-        audit_date=case.request.audit_date,
-        standard=case.request.standard,
-        executive_summary=f"Reference draft for one evidence item: {finding.reference_finding}",
-        findings=[AuditFinding(
-            finding_id="F-001",
-            clause_ref=finding.clause_ref,
-            classification=finding.classification,
-            finding_statement=finding.reference_finding,
-            objective_evidence=[case.request.evidence[0].raw_text],
-            requirement_text_id=finding.requirement_text_id,
-            suggested_corrective_action=None,
-        )],
-        open_questions=(
-            ["Auditor: confirm the evidence scope and classification rationale."]
-            if finding.expected_needs_human_review else []
-        ),
-        disclaimer="Draft report for auditor review and sign-off only.",
-    )
+    """Return the separately authored full Gold AuditReport."""
+    return case.gold.report.model_copy(deep=True)

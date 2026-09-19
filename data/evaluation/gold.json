@@ -1,8 +1,9 @@
 {
-  "dataset_id": "gap-report-derived-v1",
-  "review_status": "draft",
+  "dataset_id": "acme-messy-audit-packs-v2",
+  "review_status": "development_reviewed",
+  "review_basis": "Full reports were cross-checked for internal consistency against the project rubric, local ISO reference summaries, and source-evidence traceability. Instructor or qualified-auditor approval remains external to this repository.",
   "target_standard": "ISO/IEC 27001:2022",
-  "annotation_note": "Project-authored reference annotations for the adapted inputs. The source report uses ISO 27001:2013 and does not provide major/minor labels. These annotations require team review against the 2022 requirements before final evaluation.",
+  "annotation_note": "Project-authored synthetic development Gold AuditReports. Do not describe these labels as instructor-approved until the instructor review checklist is signed.",
   "rubric": {
     "major_nc": "Evidence demonstrates absence or systemic failure of a required management-system process.",
     "minor_nc": "Evidence demonstrates a specific requirement failure without sufficient support for a systemic failure.",
@@ -11,94 +12,274 @@
   },
   "cases": [
     {
-      "case_id": "GAP-001",
+      "case_id": "ACME-001",
       "classification": "minor_nc",
       "clause_ref": "4.3",
       "requirement_text_id": "ISO27001-4.3",
-      "reference_finding": "The defined ISMS scope has not been documented.",
-      "rationale": "Clause 4.3 requires documented scope. The input confirms that the scope is defined and understood but undocumented. The project rubric treats this documented-information failure as minor unless further evidence establishes a systemic failure.",
-      "expected_needs_human_review": true
+      "reference_finding": "The defined ISMS scope was not available as documented information.",
+      "rationale": "The boundaries are understood, but the required documented scope was unavailable. The evidence establishes a specific documentation failure without showing wider systemic absence.",
+      "expected_needs_human_review": false,
+      "report": {
+        "org_name": "Acme Corp (synthetic evaluation)",
+        "audit_date": "2026-09-16",
+        "standard": "ISO/IEC 27001:2022",
+        "executive_summary": "The audit identified a specific documented-information gap concerning the defined ISMS scope.",
+        "findings": [{
+          "finding_id": "F-001",
+          "clause_ref": "4.3",
+          "classification": "minor_nc",
+          "finding_statement": "The defined ISMS scope was not available as documented information.",
+          "objective_evidence": ["Auditee: ISMS Manager. Position: Security Manager. Interview Notes: scope boundaries understood by mgmt incl HQ + cloud ops; discussed last review. could not show documented ISMS scope. Interfaces/dependencies known verbally only."],
+          "objective_evidence_th": [],
+          "requirement_text_id": "ISO27001-4.3",
+          "suggested_corrective_action": "Document, approve, and maintain the ISMS scope, including its boundaries, interfaces, and dependencies."
+        }],
+        "open_questions": [],
+        "disclaimer": "Draft report for auditor review and sign-off only."
+      }
     },
     {
-      "case_id": "GAP-002",
+      "case_id": "ACME-002",
       "classification": "observation",
       "clause_ref": "5.2",
       "requirement_text_id": "ISO27001-5.2",
-      "reference_finding": "The information security policy has been identified for review, but the available evidence does not establish a specific policy deficiency.",
-      "rationale": "A policy exists. A recommendation to review it does not establish missing required content or failed communication. The source report's NC label is not adopted automatically for the adapted 2022 case.",
-      "expected_needs_human_review": true
+      "reference_finding": "The information security policy is approaching review, but the sampled evidence did not establish missing required content or failed communication.",
+      "rationale": "A policy exists and is available. An upcoming review does not by itself demonstrate nonconformity.",
+      "expected_needs_human_review": true,
+      "report": {
+        "org_name": "Acme Corp (synthetic evaluation)",
+        "audit_date": "2026-09-16",
+        "standard": "ISO/IEC 27001:2022",
+        "executive_summary": "The audit recorded an observation requiring follow-up on the information security policy review.",
+        "findings": [{
+          "finding_id": "F-001",
+          "clause_ref": "5.2",
+          "classification": "observation",
+          "finding_statement": "The information security policy is approaching review, but the sampled evidence did not establish missing required content or failed communication.",
+          "objective_evidence": ["Checklist Item: information security policy — current / communicated / reviewed? Result: PARTIAL INFO. Notes: approved policy exists on intranet. review date coming up. sample does not show missing required content and no evidence staff failed to receive it. verify next audit."],
+          "objective_evidence_th": [],
+          "requirement_text_id": "ISO27001-5.2",
+          "suggested_corrective_action": "Complete the scheduled policy review and retain evidence of approval and communication."
+        }],
+        "open_questions": ["Confirm the completed review date and sample evidence of policy communication."],
+        "disclaimer": "Draft report for auditor review and sign-off only."
+      }
     },
     {
-      "case_id": "GAP-003",
+      "case_id": "ACME-003",
       "classification": "observation",
       "clause_ref": "5.3",
       "requirement_text_id": "ISO27001-5.3",
-      "reference_finding": "The review identifies incomplete information about security roles, but assignment and communication of responsibilities remain unverified.",
-      "rationale": "Clause 5.3 concerns assignment and communication. The input identifies an incomplete list but does not establish that required responsibilities are unassigned or uncommunicated.",
-      "expected_needs_human_review": true
+      "reference_finding": "The available role list was incomplete, while assignment and communication of all required information security responsibilities remained unverified.",
+      "rationale": "The sample does not establish that required roles are unassigned; additional job-description evidence is needed.",
+      "expected_needs_human_review": true,
+      "report": {
+        "org_name": "Acme Corp (synthetic evaluation)",
+        "audit_date": "2026-09-16",
+        "standard": "ISO/IEC 27001:2022",
+        "executive_summary": "The audit recorded an observation about incomplete evidence of information security role assignments.",
+        "findings": [{
+          "finding_id": "F-001",
+          "clause_ref": "5.3",
+          "classification": "observation",
+          "finding_statement": "The available role list was incomplete, while assignment and communication of all required information security responsibilities remained unverified.",
+          "objective_evidence": ["Auditee: HR lead. Position: Human Resources. Interview Notes: security roles list only has CISO + IT admin. HR says other responsibilities may be in job descriptions but sample not collected today. Cannot confirm whether every required role is assigned and communicated."],
+          "objective_evidence_th": [],
+          "requirement_text_id": "ISO27001-5.3",
+          "suggested_corrective_action": "Compile and verify the complete set of information security roles, responsibilities, authorities, and communication records."
+        }],
+        "open_questions": ["Do current job descriptions assign and communicate every required information security responsibility?"],
+        "disclaimer": "Draft report for auditor review and sign-off only."
+      }
     },
     {
-      "case_id": "GAP-004",
+      "case_id": "ACME-004",
       "classification": "major_nc",
       "clause_ref": "6.1.2",
       "requirement_text_id": "ISO27001-6.1.2",
-      "reference_finding": "An information security risk assessment process has not been established and applied.",
-      "rationale": "The input explicitly states that the process is absent and the assessment has not been performed. Under the project rubric, absence of this required management-system process supports a major classification.",
-      "expected_needs_human_review": true
+      "reference_finding": "An information security risk assessment process had not been established or applied across the ISMS scope.",
+      "rationale": "The evidence explicitly shows absence of the required management-system process, methodology, criteria, ownership, and completed assessment.",
+      "expected_needs_human_review": false,
+      "report": {
+        "org_name": "Acme Corp (synthetic evaluation)",
+        "audit_date": "2026-09-16",
+        "standard": "ISO/IEC 27001:2022",
+        "executive_summary": "The audit identified a major nonconformity because the required information security risk assessment process was absent.",
+        "findings": [{
+          "finding_id": "F-001",
+          "clause_ref": "6.1.2",
+          "classification": "major_nc",
+          "finding_statement": "An information security risk assessment process had not been established or applied across the ISMS scope.",
+          "objective_evidence": ["Checklist Item: information security risk assessment process established + applied? Result: NON-COMPLIANT. Notes: no approved methodology, no assessment criteria, no risk owners and no completed ISMS risk assessment anywhere in scope. Management confirmed process has not been established."],
+          "objective_evidence_th": [],
+          "requirement_text_id": "ISO27001-6.1.2",
+          "suggested_corrective_action": "Establish, approve, document, and apply a repeatable information security risk assessment process across the ISMS scope."
+        }],
+        "open_questions": [],
+        "disclaimer": "Draft report for auditor review and sign-off only."
+      }
     },
     {
-      "case_id": "GAP-005",
+      "case_id": "ACME-005",
       "classification": "major_nc",
       "clause_ref": "6.1.3",
       "requirement_text_id": "ISO27001-6.1.3",
-      "reference_finding": "An information security risk treatment process has not been established and applied.",
-      "rationale": "The input describes an absent process, not an isolated delay within an established process. Planned future treatment does not establish current implementation.",
-      "expected_needs_human_review": true
+      "reference_finding": "An information security risk treatment process had not been established for the ISMS scope.",
+      "rationale": "The evidence shows organization-wide absence of risk treatment, control selection, the Statement of Applicability, and risk-owner acceptance.",
+      "expected_needs_human_review": false,
+      "report": {
+        "org_name": "Acme Corp (synthetic evaluation)",
+        "audit_date": "2026-09-16",
+        "standard": "ISO/IEC 27001:2022",
+        "executive_summary": "The audit identified a major nonconformity because the information security risk treatment process was absent.",
+        "findings": [{
+          "finding_id": "F-001",
+          "clause_ref": "6.1.3",
+          "classification": "major_nc",
+          "finding_statement": "An information security risk treatment process had not been established for the ISMS scope.",
+          "objective_evidence": ["Document Name: Risk Treatment Pack. Reference: RTP-index / empty. Review Notes: requested risk treatment process, treatment plan, control selection and SoA. none available. no risk-owner acceptance of residual risk. management confirmed risk treatment process not established for any ISMS area."],
+          "objective_evidence_th": [],
+          "requirement_text_id": "ISO27001-6.1.3",
+          "suggested_corrective_action": "Establish and apply the risk treatment process, treatment plan, control selection, Statement of Applicability, and required risk-owner approvals."
+        }],
+        "open_questions": [],
+        "disclaimer": "Draft report for auditor review and sign-off only."
+      }
     },
     {
-      "case_id": "GAP-006",
+      "case_id": "ACME-006",
       "classification": "major_nc",
       "clause_ref": "6.2",
       "requirement_text_id": "ISO27001-6.2",
-      "reference_finding": "Information security objectives and their measurement arrangements have not been defined.",
-      "rationale": "The adapted input describes absence of ISMS objectives and associated measurements. The project rubric treats this as a systemic planning failure, subject to confirmation of the organizational scope.",
-      "expected_needs_human_review": true
+      "reference_finding": "Information security objectives and the arrangements required to achieve and monitor them had not been established.",
+      "rationale": "The absence applies across functions and levels and persisted after a prior internal note, supporting a systemic planning failure.",
+      "expected_needs_human_review": false,
+      "report": {
+        "org_name": "Acme Corp (synthetic evaluation)",
+        "audit_date": "2026-09-16",
+        "standard": "ISO/IEC 27001:2022",
+        "executive_summary": "The audit identified a major nonconformity concerning absent information security objectives and planning arrangements.",
+        "findings": [{
+          "finding_id": "F-001",
+          "clause_ref": "6.2",
+          "classification": "major_nc",
+          "finding_statement": "Information security objectives and the arrangements required to achieve and monitor them had not been established.",
+          "objective_evidence": ["Document Name: ISMS Objectives Register. Reference: OBJ-REG. Review Notes: blank template only. no information security objectives at any function/level, no target, owner, measure, resource, due date or monitoring record. prior internal note raised same absence; still not implemented."],
+          "objective_evidence_th": [],
+          "requirement_text_id": "ISO27001-6.2",
+          "suggested_corrective_action": "Establish documented information security objectives with owners, measures, resources, due dates, and monitoring arrangements."
+        }],
+        "open_questions": [],
+        "disclaimer": "Draft report for auditor review and sign-off only."
+      }
     },
     {
-      "case_id": "GAP-007",
+      "case_id": "ACME-007",
       "classification": "observation",
       "clause_ref": "7.2",
       "requirement_text_id": "ISO27001-7.2",
-      "reference_finding": "Competence is checked at recruitment, but the available evidence does not establish how required competence and supporting records are maintained.",
-      "rationale": "The absence of a particular post-employment check alone does not establish failure of clause 7.2. Required competence, competence evidence and the effectiveness of applicable actions need further examination.",
-      "expected_needs_human_review": true
+      "reference_finding": "Post-hire competence evidence and effectiveness checks were not sampled, so continuing competence remained unverified.",
+      "rationale": "Recruitment checks and coaching exist, and the evidence does not establish that personnel are incompetent or that required records are absent.",
+      "expected_needs_human_review": true,
+      "report": {
+        "org_name": "Acme Corp (synthetic evaluation)",
+        "audit_date": "2026-09-16",
+        "standard": "ISO/IEC 27001:2022",
+        "executive_summary": "The audit recorded an observation requiring additional sampling of competence evidence.",
+        "findings": [{
+          "finding_id": "F-001",
+          "clause_ref": "7.2",
+          "classification": "observation",
+          "finding_statement": "Post-hire competence evidence and effectiveness checks were not sampled, so continuing competence remained unverified.",
+          "objective_evidence": ["Auditee: HR officer. Position: Recruitment. Interview Notes: competence checked when hiring; manager coaching happens. auditor did not sample qualification/training records after hire and did not establish any employee was incompetent. follow-up needed on retained evidence and effectiveness checks."],
+          "objective_evidence_th": [],
+          "requirement_text_id": "ISO27001-7.2",
+          "suggested_corrective_action": "Sample retained competence records and verify how the effectiveness of competence-building actions is evaluated."
+        }],
+        "open_questions": ["What competence records and effectiveness evaluations are retained after recruitment?"],
+        "disclaimer": "Draft report for auditor review and sign-off only."
+      }
     },
     {
-      "case_id": "GAP-008",
+      "case_id": "ACME-008",
       "classification": "observation",
       "clause_ref": "7.3",
       "requirement_text_id": "ISO27001-7.3",
-      "reference_finding": "Staff receive security updates by email, but their awareness of the required ISMS topics has not been established by the available evidence.",
-      "rationale": "Clause 7.3 requires awareness, not a specific course format. A missing formal training programme does not by itself prove lack of awareness.",
-      "expected_needs_human_review": true
+      "reference_finding": "Formal annual awareness training was absent, while personnel awareness of required ISMS topics remained unverified.",
+      "rationale": "Alternative awareness activities exist. Absence of one preferred course format does not prove lack of awareness.",
+      "expected_needs_human_review": true,
+      "report": {
+        "org_name": "Acme Corp (synthetic evaluation)",
+        "audit_date": "2026-09-16",
+        "standard": "ISO/IEC 27001:2022",
+        "executive_summary": "The audit recorded an observation requiring verification of personnel security awareness.",
+        "findings": [{
+          "finding_id": "F-001",
+          "clause_ref": "7.3",
+          "classification": "observation",
+          "finding_statement": "Formal annual awareness training was absent, while personnel awareness of required ISMS topics remained unverified.",
+          "objective_evidence": ["Checklist Item: security awareness. Result: NEEDS VERIFICATION. Notes: no formal annual course, but monthly security emails and onboarding briefing samples exist. audit did not test whether staff understand policy, contribution to ISMS, or consequences of nonconformity."],
+          "objective_evidence_th": [],
+          "requirement_text_id": "ISO27001-7.3",
+          "suggested_corrective_action": "Evaluate whether current awareness activities produce the required understanding and retain evidence of the evaluation."
+        }],
+        "open_questions": ["Do sampled personnel understand the policy, their contribution, and consequences of nonconformity?"],
+        "disclaimer": "Draft report for auditor review and sign-off only."
+      }
     },
     {
-      "case_id": "GAP-009",
+      "case_id": "ACME-009",
       "classification": "ofi",
       "clause_ref": "7.5.3",
       "requirement_text_id": "ISO27001-7.5.3",
-      "reference_finding": "ISMS document retrieval could be improved by organizing documents for easier access.",
-      "rationale": "The input identifies slow retrieval but no required document unavailable when needed. It supports an improvement opportunity without demonstrating a specific requirement failure.",
-      "expected_needs_human_review": false
+      "reference_finding": "Document retrieval could be improved by consolidating the controlled index and storage location.",
+      "rationale": "Required sampled documents were available, current, and controlled; the evidence supports efficiency improvement rather than a requirement failure.",
+      "expected_needs_human_review": false,
+      "report": {
+        "org_name": "Acme Corp (synthetic evaluation)",
+        "audit_date": "2026-09-16",
+        "standard": "ISO/IEC 27001:2022",
+        "executive_summary": "The audit identified an opportunity to improve the efficiency of controlled-document retrieval.",
+        "findings": [{
+          "finding_id": "F-001",
+          "clause_ref": "7.5.3",
+          "classification": "ofi",
+          "finding_statement": "Document retrieval could be improved by consolidating the controlled index and storage location.",
+          "objective_evidence": ["Document Name: ISMS document index. Reference: DOC-IDX-04. Review Notes: required documents sampled were available and current, access controlled. retrieval took 8–12 min across folders. team plans one indexed location; improvement only, no unavailable document identified."],
+          "objective_evidence_th": [],
+          "requirement_text_id": "ISO27001-7.5.3",
+          "suggested_corrective_action": "Consolidate the controlled document index and define a consistent retrieval location while preserving access controls."
+        }],
+        "open_questions": [],
+        "disclaimer": "Draft report for auditor review and sign-off only."
+      }
     },
     {
-      "case_id": "GAP-010",
+      "case_id": "ACME-010",
       "classification": "observation",
       "clause_ref": "9.2.2",
       "requirement_text_id": "ISO27001-9.2.2",
-      "reference_finding": "The review identifies a need to strengthen ISMS audit planning and auditor preparation; the current programme's adequacy requires verification.",
-      "rationale": "The input recommends planning, scheduling and training, but does not explicitly establish that no ISMS audit programme exists or that required audits were missed.",
-      "expected_needs_human_review": true
+      "reference_finding": "The ISMS audit programme and schedule were still being prepared, while the available evidence did not establish that required audits had been missed.",
+      "rationale": "The programme's adequacy requires verification, but the evidence does not prove absence or failure of required internal audits.",
+      "expected_needs_human_review": true,
+      "report": {
+        "org_name": "Acme Corp (synthetic evaluation)",
+        "audit_date": "2026-09-16",
+        "standard": "ISO/IEC 27001:2022",
+        "executive_summary": "The audit recorded an observation requiring verification of the ISMS internal audit programme.",
+        "findings": [{
+          "finding_id": "F-001",
+          "clause_ref": "9.2.2",
+          "classification": "observation",
+          "finding_statement": "The ISMS audit programme and schedule were still being prepared, while the available evidence did not establish that required audits had been missed.",
+          "objective_evidence": ["Auditee: Quality audit lead. Position: Lead internal auditor. Interview Notes: team runs ISO 9001 audits; ISMS audit programme/schedule still being prepared and extra auditor training planned. evidence today does not establish required ISO 27001 audits were missed or programme is absent. confirm scope, frequency and records."],
+          "objective_evidence_th": [],
+          "requirement_text_id": "ISO27001-9.2.2",
+          "suggested_corrective_action": "Complete and approve the risk-based ISMS audit programme, including scope, frequency, methods, responsibilities, and retained records."
+        }],
+        "open_questions": ["Were any required ISMS audits missed, and what programme records are available?"],
+        "disclaimer": "Draft report for auditor review and sign-off only."
+      }
     }
   ]
 }
