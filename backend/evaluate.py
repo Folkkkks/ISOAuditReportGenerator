@@ -23,7 +23,7 @@ def save_results(directory: Path, result: dict) -> None:
     metrics = result['metrics']
     result['thresholds'] = {
         'classification_macro_f1_minimum': 0.75,
-        'released_automated_unsupported_major_maximum': 0,
+        'automated_unsupported_major_maximum': 0,
         'passed': (
             metrics['prediction_coverage'] == 1.0
             and metrics['classification_macro_f1'] >= 0.75

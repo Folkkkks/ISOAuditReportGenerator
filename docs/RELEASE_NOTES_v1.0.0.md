@@ -34,7 +34,7 @@ Gold status: `development_reviewed`
 | Automated grounding score | 1.0000 | 1.0000 |
 | Released unsupported Major NCs | 0 | 0 |
 
-PRD pass threshold: classification macro F1 ≥ 0.75 and zero released unsupported Major NC findings.  
+PRD pass threshold: classification macro F1 ≥ 0.75 and zero unsupported Major NCs on the gold set.  
 Result: **Passed**.
 
 This is a small, project-authored development set rather than a held-out benchmark. Automated Judge results do not replace qualified external review.
